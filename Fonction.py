@@ -55,8 +55,8 @@ def importation_locale(code):
         fh.close()
         Fichier = "".join(liste_fich)
         return Fichier
-    
-    
+
+
 def header(PDB):
     seq = ">"
     PDB = PDB.split("\n")
@@ -81,14 +81,14 @@ def FASTA(PDB):
     #Récupération des résidus sur les lignes SEQRES et arrêt du parcous dès que les lignes SEQRES s'arrêtent
     while "SEQRES"  in PDB[i]:
         # Slicing de la ligne pour récupérer les résidus facilement
-        ligne = PDB[i].split()    
+        ligne = PDB[i].split()
         # Ajout de l'acide aminé
         liste_AA+= ligne[4:]
         i+=1
 
-    code_acide_amine = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V",}   
-    
-        
+    code_acide_amine = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V",}
+
+
     # Création de la liste pour accueillir la séquence à une lettre
     liste_AA_1_Lettre = []
     for AA in liste_AA:
@@ -100,24 +100,24 @@ def FASTA(PDB):
             liste_AA_1_Lettre.insert(80*i +i-1 ,"\n")
 
     #Création de la chaine de caractères
-    
+
     seq_FASTA = "".join(liste_AA_1_Lettre)
 
 
     return seq_FASTA
 
 def fusion(PDB):
-    Header = header(PDB) 
+    Header = header(PDB)
     seq = FASTA(PDB)
     sequence = Header + seq
     return sequence
 
-def info_imp(PDB) : 
+def info_imp(PDB) :
     liste_info = []
     PDB = PDB.strip()
     PDB = PDB.split("\n")
     for ligne in PDB:
-        ligne = ligne.split() 
+        ligne = ligne.split()
         if ligne[0] == "HEADER" :
             liste_info.append("Description: " + " ".join(ligne[1:]))
         if "TITLE" in ligne:
@@ -182,8 +182,8 @@ def test_proportion(dataframe):
     liste_pvalue = []
     for table in liste_mat:
         if np.any(table < 5) :
-            res = st.fisher_exact(table, alternative = "two-sided")
-            liste_pvalue.append(res.pvalue)
+            _, pvalue = st.fisher_exact(table, alternative = "two-sided")
+            liste_pvalue.append(pvalue)
 
         else:
             _ ,pvalue ,_ ,_ = st.chi2_contingency(table)
@@ -235,7 +235,7 @@ def graphique_aa(PDB):
     plt.title('Fréquences des acides aminés dans la séquence protéique')
     plt.legend()
     plt.show()
-    
+
     #Graphique pour les acides aminés de la séquence
     plt.bar(df["AA"], df["Freq"], color = couleur, edgecolor = "black")
     plt.title("Histogramme réprésentant la répartition des acides aminés dans la séquence")
