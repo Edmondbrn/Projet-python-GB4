@@ -183,7 +183,7 @@ def test_proportion(dataframe):
     for table in liste_mat:
         if np.any(table < 5) :
             res = st.fisher_exact(table, alternative = "two-sided")
-            liste_pvalue.append(res.pvalue)
+            liste_pvalue.append(res[1])
 
         else:
             _ ,pvalue ,_ ,_ = st.chi2_contingency(table)
