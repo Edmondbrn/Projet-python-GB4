@@ -257,7 +257,7 @@ def hydrophobicite(seq):
 
 #====================================================================================================================
 
-fiche_pdb = importation_online("1IRC")
+# fiche_pdb = importation_online("1IRC")
 # print(fiche_pdb)
 
 # df = (tableau_bilan_AA(fiche_pdb))
@@ -265,7 +265,7 @@ fiche_pdb = importation_online("1IRC")
 
 # print(composition_AA(fiche_pdb))
 
-print(graphique_aa(fiche_pdb))
+# print(graphique_aa(fiche_pdb))
 
 # print(info_imp(fiche_pdb))
 
