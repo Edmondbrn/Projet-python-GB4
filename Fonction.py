@@ -16,6 +16,7 @@ import numpy as np
 import seaborn as sb
 import pandas as pd
 import scipy.stats as st
+from math import sqrt
 
 
 
@@ -124,6 +125,7 @@ def info_imp(PDB) :
             liste_info.append("Titre:" +  " ".join(ligne[1:]))
         if ligne[0] == "DBREF" :
             liste_info.append("Taille de la séquence " + ligne[4] + " résidus")
+            liste_info.append("Identifiant Uniprot " + ligne[6])
         if "EXPDTA" in ligne:
             liste_info.append("Méthode expérimentale: " + " ".join(ligne[1:]))
         if "REMARK" in ligne and "RESOLUTION." in ligne:
@@ -251,14 +253,161 @@ def hydrophobicite(seq):
     pass
 
 
+
+def coordonnees(PDB, atom):
+    """Fonction qui extrait les coordonnées dans l'espace d'un atome précis donné"""
+    if atom == "SG":
+        atome = "C"
+    else:
+        atome = "CA"
+    PDB = PDB.split("\n")
+    i = 0
+    nb = 1
+    dico_atome = {}
+    while  PDB[i][0:4] != "ATOM":
+        i+=1
+    while PDB[i][0:4] == "ATOM":
+        ligne = PDB[i].split()
+        if atom in ligne:
+            x, y, z, pos= ligne[6], ligne[7], ligne[8], ligne[5]
+            dico_atome[atome + pos] = [x,y,z]
+            nb += 1
+            i += 1
+        else:
+            i+=1
+    return dico_atome
+
+
+def calcul_distance(PDB, atom):
+    """Calcul la distance euclidienne entre 2 atomes donnés"""
+    dico_coord = coordonnees(PDB, atom)
+    dico_distance = {}
+    # Nombre de tour de boucle à sauter
+    k = 1
+
+    for atome in dico_coord.keys():
+        liste_coord_ref = dico_coord[atome]
+
+        # Stocke le nombre de tours déjà sauter
+        y = 0
+        for atome_compl in dico_coord.keys():
+            # Saute les boucles
+            if y < k :
+                y+=1
+                continue
+                
+            distance = (float(dico_coord[atome_compl][0]) - float(liste_coord_ref[0]))**2 + (float(dico_coord[atome_compl][1]) - float(liste_coord_ref[1]))**2 + (float(dico_coord[atome_compl][2]) - float(liste_coord_ref[2]))**2
+            distance = sqrt(distance)
+            dico_distance[atome + ":" + atome_compl] = distance
+        k +=1
+    return dico_distance
+
+def recuperation_code_Uniprot(PDB):
+    """Récupère le code Uniprot de la protéine de la fiche PDB"""
+    info_importante = info_imp(PDB)
+    info_importante = info_importante.strip()
+    info_importante = info_importante.split("\n")
+    info_Uniprot = info_importante[-1].split()
+    code_uniprot = info_Uniprot[-1]
+    return code_uniprot
+
+
+def importation_online_uniprot(PDB):
+    """ Charge le fichier txt de la fiche uniprot de la protéine"""
+    code = recuperation_code_Uniprot(PDB)
+    """Fonction pour récupérer la fiche uniprot en ligne"""
+    liste_fich = []
+    try:
+        context = ssl._create_unverified_context()
+        u=urllib.request.urlopen("https://rest.uniprot.org/uniprotkb/" + code.upper()+".txt", context=context)
+        pdblines=u.readlines()
+        u.close()
+    except:
+        return("Problème lors de la lecture du fichier: \n" + "https://rest.uniprot.org/uniprotkb/"+code.upper()+".txt\n Veuillez fermer le programme et réessayer")
+    else:
+        for ligne in pdblines:
+            liste_fich.append(ligne.decode("utf8").strip() + "\n")
+            fichier = "".join(liste_fich)
+        return fichier
+
+
+def secreted(PDB):
+    """Vérifie si la protéine est sécrétée"""
+    uniprot = importation_online_uniprot(PDB)
+    info_loc=[]
+    uniprot= uniprot.split("\n")
+    for ligne in uniprot:
+        if "SUBCELLULAR LOCATION: Secreted" in ligne :
+            return True
+        else:
+            False
+
+
+def pontdisulfure(PDB, atom):
+    """Calcul al présence ou non de pontdisulfure entre les protéines"""
+    
+    if secreted(PDB):
+        dico_distance = calcul_distance(PDB, atom)
+        dico_pontdi = {}
+        dico_non_pont = {}
+        for atome in dico_distance.keys():
+            if dico_distance[atome] <= 3:
+                dico_pontdi[atome] = dico_distance[atome]
+            else:
+                dico_non_pont[atome] = dico_distance[atome]
+        return dico_pontdi, dico_non_pont
+    
+    else:
+        return "Etes vous sûr que la protéine est sécrétée avant de calculer la présence de pontdisulfures ?"
+
+
+
+def distance_carbone_alpha(PDB):
+    distance_CA = calcul_distance(PDB, "CA")
+    return distance_CA
+
+def matrice_contact(PDB):
+    seq = list(FASTA(PDB))
+    distance = distance_carbone_alpha(PDB)
+    liste_distance = list(distance.values())
+    df = pd.DataFrame(index = seq, columns= seq)
+    np.fill_diagonal(df.values, 0)
+
+    k = 0
+    for i in range(len(df.columns)):
+        pos_cel = 1+i
+        while pos_cel < df.shape[1] and k< len(liste_distance):
+            df.iloc[i,pos_cel] = liste_distance[k]
+            df.iloc[pos_cel,i]= liste_distance[k]
+            pos_cel +=1
+            k+=1
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_columns', None)
+
+    return str(df)
+
+
+
 #====================================================================================================================
 
                                                     # Script #
 
 #====================================================================================================================
 
-# fiche_pdb = importation_online("1IRC")
+fiche_pdb = importation_online("1CRN")
 # print(fiche_pdb)
+# print(distance_carbone_alpha(fiche_pdb))
+print(matrice_contact(fiche_pdb))
+
+# print(secreted(fiche_pdb))
+
+# dico = coordonnees(fiche_pdb, "SG")
+# Dico_distance = calcul_distance(dico)
+
+# print(pontdisulfure(fiche_pdb, "SG"))
+
+# print(recuperation_code_Uniprot(fiche_pdb))
+# print(importation_online_uniprot(fiche_pdb))
 
 # df = (tableau_bilan_AA(fiche_pdb))
 

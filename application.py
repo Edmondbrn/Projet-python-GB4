@@ -513,6 +513,10 @@ class Application:
         elif event.ui_element == self.bouton_modif_Pymol :
             self.page = 6
 
+        elif event.ui_element == self.bouton_matrice_de_contact:
+            self.matrice = F.matrice_contact(F.importation_online(self.entreeTexte.text))
+            self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.matrice))
+
         elif event.ui_element == self.bouton_Retour :
             self.page = 3
 
