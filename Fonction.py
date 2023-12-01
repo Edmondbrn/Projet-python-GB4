@@ -371,7 +371,7 @@ def matrice_contact(PDB):
     distance = distance_carbone_alpha(PDB)
     liste_distance = list(distance.values())
     df = pd.DataFrame(index = seq, columns= seq)
-    np.fill_diagonal(df.values, 0)
+    np.fill_diagonal(df.values, 0.0)
 
     # indice pour la liste des distances
     k = 0
@@ -384,10 +384,10 @@ def matrice_contact(PDB):
             df.iloc[pos_cel,i]= liste_distance[k]
             pos_cel +=1
             k+=1
-    pd.set_option('display.max_rows', None)
-    pd.set_option('display.max_columns', None)
+    # pd.set_option('display.max_rows', None)
+    # pd.set_option('display.max_columns', None)
 
-    return str(df)
+    return df
 
 
 

@@ -3,28 +3,32 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import Fonction as F
 
 sns.set_theme(style="white")
 
-# Generate a large random dataset
-rs = np.random.RandomState(33)
-d = pd.DataFrame(data=rs.normal(size=(100, 26)),
-                 columns=list(ascii_letters[26:]))
+mat = F.matrice_contact(F.importation_online("1CRN"))
+mat.columns = [x for x in range(1, mat.shape[1]+1)]
+mat.index = [x for x in range(1, mat.shape[1]+1)]
+mat = mat.astype(float)
 
-# Compute the correlation matrix
-corr = d.corr()
 
-# Generate a mask for the upper triangle
-mask = np.triu(np.ones_like(corr, dtype=bool))
 
 # Set up the matplotlib figure
-f, ax = plt.subplots(figsize=(11, 9))
+f, ax = plt.subplots(figsize=(10, 8))
 
 # Generate a custom diverging colormap
-cmap = sns.diverging_palette(230, 20, as_cmap=True)
+
+cmap = sns.color_palette("rainbow", as_cmap=True)
+
 
 # Draw the heatmap with the mask and correct aspect ratio
-sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
-            square=True, linewidths=.5, cbar_kws={"shrink": .5})
+max = np.max(np.max(mat))
+
+sns.heatmap(mat , cmap=cmap, fmt=".2f", linewidths=.5, cbar_kws={"shrink": .75})
 
 plt.show()
+
+
+
+
