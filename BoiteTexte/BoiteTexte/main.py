@@ -28,7 +28,7 @@ class Jeu:
                             position=(100, 100),
                             tailleFond=(800, 600),
                             texte=texte.texte,
-                            police = "monospace".set_bold()
+                            police = "monospace"
         )
 
 

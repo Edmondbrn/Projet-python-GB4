@@ -1,22 +1,30 @@
-import pandas as pd
+from string import ascii_letters
 import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-# Créer un DataFrame avec des zéros sur la diagonale et des valeurs au-dessus
-donnees = {'A': [0, 1, 2, 3],
-           'B': [0, 0, 4, 5],
-           'C': [0, 0, 0, 6],
-           'D': [0, 0, 0, 0]}
+sns.set_theme(style="white")
 
-df = pd.DataFrame(donnees)
+# Generate a large random dataset
+rs = np.random.RandomState(33)
+d = pd.DataFrame(data=rs.normal(size=(100, 26)),
+                 columns=list(ascii_letters[26:]))
 
-print("DataFrame d'origine :")
-print(df)
+# Compute the correlation matrix
+corr = d.corr()
 
-# Extraire la partie triangulaire supérieure de la matrice
-tri_sup = np.triu(df.values, k=1)
+# Generate a mask for the upper triangle
+mask = np.triu(np.ones_like(corr, dtype=bool))
 
-# Ajouter la partie triangulaire supérieure à sa transposée
-df_symetrique = pd.DataFrame(tri_sup + tri_sup.T, columns=df.columns, index=df.index)
+# Set up the matplotlib figure
+f, ax = plt.subplots(figsize=(11, 9))
 
-print("\nDataFrame symétrique :")
-print(df_symetrique)
+# Generate a custom diverging colormap
+cmap = sns.diverging_palette(230, 20, as_cmap=True)
+
+# Draw the heatmap with the mask and correct aspect ratio
+sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+            square=True, linewidths=.5, cbar_kws={"shrink": .5})
+
+plt.show()

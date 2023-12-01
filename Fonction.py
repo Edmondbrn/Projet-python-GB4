@@ -373,8 +373,11 @@ def matrice_contact(PDB):
     df = pd.DataFrame(index = seq, columns= seq)
     np.fill_diagonal(df.values, 0)
 
+    # indice pour la liste des distances
     k = 0
+    # Parcourt des lignes du tableau 
     for i in range(len(df.columns)):
+        # position de la cellule
         pos_cel = 1+i
         while pos_cel < df.shape[1] and k< len(liste_distance):
             df.iloc[i,pos_cel] = liste_distance[k]
