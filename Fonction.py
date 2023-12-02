@@ -368,10 +368,12 @@ def distance_carbone_alpha(PDB):
 
 def matrice_contact(PDB):
     seq = list(FASTA(PDB))
+    index = [x for x in range(1, len(seq)+1)]
     distance = distance_carbone_alpha(PDB)
     liste_distance = list(distance.values())
-    df = pd.DataFrame(index = seq, columns= seq)
-    np.fill_diagonal(df.values, 0.0)
+    print(liste_distance)
+    df = pd.DataFrame(index = index, columns= index)
+    np.fill_diagonal(df.values, float(0))
 
     # indice pour la liste des distances
     k = 0
@@ -384,11 +386,41 @@ def matrice_contact(PDB):
             df.iloc[pos_cel,i]= liste_distance[k]
             pos_cel +=1
             k+=1
+    print(len(liste_distance))
+    print(df.shape)
+    print(liste_distance[k-1])
     # pd.set_option('display.max_rows', None)
     # pd.set_option('display.max_columns', None)
+    
 
     return df
 
+def graph_matrice(PDB):
+    
+    mat = matrice_contact(PDB)
+    # Conversion du datframe en un format compréhensible pour le graphiUe
+    mat = mat.astype(float)
+
+    # Initiation du graphique matplotlib
+    f, ax = plt.subplots(figsize=(20, 16))
+
+    # Création du dégradé de couleur avec seaborn
+    cmap = sb.color_palette("rainbow", as_cmap=True)
+
+    # Création du graphique
+    ax = sb.heatmap(mat, cmap=cmap)
+    # Ajoute  la barre de couleur au graphique
+    # barre = plt.colorbar(graph)
+    # barre.set_label('Distance (A)', rotation=90, labelpad=15)
+
+    # Formatage des axes
+    plt.xlabel("Index des acides aminés")
+    plt.ylabel("Index des acides aminés")
+    plt.title("Heatmap de la distance des acides aminés dans l'espace")
+
+    plt.show()
+
+    return plt.show()
 
 
 #====================================================================================================================
@@ -397,10 +429,11 @@ def matrice_contact(PDB):
 
 #====================================================================================================================
 
-fiche_pdb = importation_online("1CRN")
+fiche_pdb = importation_online("1GC6")
 # print(fiche_pdb)
 # print(distance_carbone_alpha(fiche_pdb))
 print(matrice_contact(fiche_pdb))
+# print(graph_matrice(fiche_pdb))
 
 # print(secreted(fiche_pdb))
 
