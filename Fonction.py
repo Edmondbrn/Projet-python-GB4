@@ -104,12 +104,11 @@ def FASTA(PDB):
 
     seq_FASTA = "".join(liste_AA_1_Lettre)
 
-
-    return seq_FASTA
+    return seq_FASTA, liste_AA
 
 def fusion(PDB):
     Header = header(PDB)
-    seq = FASTA(PDB)
+    seq,_ = FASTA(PDB)
     sequence = Header + seq
     return sequence
 
@@ -137,7 +136,7 @@ def info_imp(PDB) :
     return info
 
 def composition_AA(PDB):
-    seq = FASTA(PDB)
+    seq,_ = FASTA(PDB)
     seq = seq.replace("\n", "")
     dico = {}
     for AA in seq:
@@ -183,13 +182,8 @@ def test_proportion(dataframe):
 
     liste_pvalue = []
     for table in liste_mat:
-        if np.any(table < 5) :
-            _, pvalue = st.fisher_exact(table, alternative = "two-sided")
-            liste_pvalue.append(pvalue)
-
-        else:
-            _ ,pvalue ,_ ,_ = st.chi2_contingency(table)
-            liste_pvalue.append(pvalue)
+        _, pvalue = st.fisher_exact(table, alternative = "two-sided")
+        liste_pvalue.append(pvalue)
     return liste_pvalue
 
 
@@ -256,35 +250,63 @@ def hydrophobicite(seq):
 
 def coordonnees(PDB, atom):
     """Fonction qui extrait les coordonnées dans l'espace d'un atome précis donné"""
+    _, seq = FASTA(PDB)
+    # seq = list(seq.replace("\n",""))
+
     if atom == "SG":
         atome = "C"
     else:
         atome = "CA"
     PDB = PDB.split("\n")
     i = 0
-    nb = 1
+    indice_seq = 0
+    index_corr = 0
+    longueur_seq_resolue = 0
+
     dico_atome = {}
     while  PDB[i][0:4] != "ATOM":
         i+=1
     while PDB[i][0:4] == "ATOM":
         ligne = PDB[i].split()
+        ligne_bis = PDB[i+1].split()
         if atom in ligne:
-            x, y, z, pos= ligne[6], ligne[7], ligne[8], ligne[5]
-            dico_atome[atome + pos] = [x,y,z]
-            nb += 1
-            i += 1
+            # Teste si l'acide aminé en question correspond à l'acide aminé de la séquence associé (saute les AA non résolus spatialement)
+            if seq[indice_seq] not in ligne[3]:
+                indice_seq +=1
+                index_corr +=1
+            else:
+                # Si l'AA est annoté sous plusieurs états différents
+                if len(ligne[3]) > 3:
+                    # Si AA est en plusieurs etats différents (ALEU/BLEU)
+
+                    #moyenne des coordonnées des deux états
+                    x, y, z, pos = np.mean(float(ligne[6]) + float(ligne_bis[6])), np.mean(float(ligne[7]) + float(ligne_bis[7])), np.mean(float(ligne[8]) + float(ligne_bis[8])), ligne[5]
+                    dico_atome[atome + pos] = [x,y,z]
+                    longueur_seq_resolue += 1
+                    # nb += 1
+                    # Saute le 2e CA de l'AA dans le second état
+                    i += 4
+                    indice_seq +=1
+                    
+                else:
+                    x, y, z, pos= ligne[6], ligne[7], ligne[8], ligne[5]
+                    dico_atome[atome + pos] = [x,y,z]
+                    longueur_seq_resolue += 1
+                    # nb += 1
+                    i += 1
+                    indice_seq +=1
+
         else:
             i+=1
-    return dico_atome
+    return dico_atome, longueur_seq_resolue
 
 
 def calcul_distance(PDB, atom):
     """Calcul la distance euclidienne entre 2 atomes donnés"""
-    dico_coord = coordonnees(PDB, atom)
+    dico_coord,_ = coordonnees(PDB, atom)
     dico_distance = {}
     # Nombre de tour de boucle à sauter
     k = 1
-
     for atome in dico_coord.keys():
         liste_coord_ref = dico_coord[atome]
 
@@ -344,7 +366,7 @@ def secreted(PDB):
 
 
 def pontdisulfure(PDB, atom):
-    """Calcul al présence ou non de pontdisulfure entre les protéines"""
+    """Calcule la présence ou non de pontdisulfure entre les protéines"""
     
     if secreted(PDB):
         dico_distance = calcul_distance(PDB, atom)
@@ -358,7 +380,17 @@ def pontdisulfure(PDB, atom):
         return dico_pontdi, dico_non_pont
     
     else:
-        return "Etes vous sûr que la protéine est sécrétée avant de calculer la présence de pontdisulfures ?"
+        dico_distance = calcul_distance(PDB, atom)
+        dico_pontdi = {}
+        dico_non_pont = {}
+        for atome in dico_distance.keys():
+            if dico_distance[atome] <= 3:
+                dico_pontdi[atome] = dico_distance[atome]
+            else:
+                dico_non_pont[atome] = dico_distance[atome]
+        return dico_pontdi, dico_non_pont
+
+        #return "Etes vous sûr que la protéine est sécrétée avant de calculer la présence de pontdisulfures ?"
 
 
 
@@ -367,11 +399,11 @@ def distance_carbone_alpha(PDB):
     return distance_CA
 
 def matrice_contact(PDB):
-    seq = list(FASTA(PDB))
-    index = [x for x in range(1, len(seq)+1)]
+    _, longueur_mat = coordonnees(PDB, "CA")
+    index = [x for x in range(1, longueur_mat+1)]
+    
     distance = distance_carbone_alpha(PDB)
     liste_distance = list(distance.values())
-    print(liste_distance)
     df = pd.DataFrame(index = index, columns= index)
     np.fill_diagonal(df.values, float(0))
 
@@ -386,9 +418,7 @@ def matrice_contact(PDB):
             df.iloc[pos_cel,i]= liste_distance[k]
             pos_cel +=1
             k+=1
-    print(len(liste_distance))
-    print(df.shape)
-    print(liste_distance[k-1])
+  
     # pd.set_option('display.max_rows', None)
     # pd.set_option('display.max_columns', None)
     
@@ -407,18 +437,13 @@ def graph_matrice(PDB):
     # Création du dégradé de couleur avec seaborn
     cmap = sb.color_palette("rainbow", as_cmap=True)
 
-    # Création du graphique
-    ax = sb.heatmap(mat, cmap=cmap)
-    # Ajoute  la barre de couleur au graphique
-    # barre = plt.colorbar(graph)
-    # barre.set_label('Distance (A)', rotation=90, labelpad=15)
-
-    # Formatage des axes
+    contour = plt.contourf(mat, levels=7, cmap=cmap, alpha=1)
+    # Ajouter une barre de couleur pour le tracé de contour
+    legende = plt.colorbar(contour, ax=ax, orientation="vertical", shrink=0.75)
+    legende.set_label('Distance (A)', rotation=90, labelpad=15)
     plt.xlabel("Index des acides aminés")
     plt.ylabel("Index des acides aminés")
     plt.title("Heatmap de la distance des acides aminés dans l'espace")
-
-    plt.show()
 
     return plt.show()
 
@@ -429,18 +454,18 @@ def graph_matrice(PDB):
 
 #====================================================================================================================
 
-fiche_pdb = importation_online("1GC6")
+fiche_pdb = importation_online("6I9K")
 # print(fiche_pdb)
 # print(distance_carbone_alpha(fiche_pdb))
-print(matrice_contact(fiche_pdb))
+# print(matrice_contact(fiche_pdb))
+# # print(coordonnees(fiche_pdb, "CA"))
+print(pontdisulfure(fiche_pdb, "SG"))
 # print(graph_matrice(fiche_pdb))
 
 # print(secreted(fiche_pdb))
 
-# dico = coordonnees(fiche_pdb, "SG")
 # Dico_distance = calcul_distance(dico)
 
-# print(pontdisulfure(fiche_pdb, "SG"))
 
 # print(recuperation_code_Uniprot(fiche_pdb))
 # print(importation_online_uniprot(fiche_pdb))
