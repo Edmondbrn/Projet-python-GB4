@@ -259,43 +259,54 @@ def coordonnees(PDB, atom):
         atome = "CA"
     PDB = PDB.split("\n")
     i = 0
-    indice_seq = 0
-    index_corr = 0
+    # indice_seq = 0
+    # index_corr = 0
     longueur_seq_resolue = 0
 
     dico_atome = {}
     while  PDB[i][0:4] != "ATOM":
         i+=1
-    while PDB[i][0:4] == "ATOM":
+    while PDB[i][0:4] == "ATOM" or PDB[i+1][0:4] == "ATOM" :
         ligne = PDB[i].split()
-        ligne_bis = PDB[i+1].split()
+        # test si SG ou CA est dans la séquence
         if atom in ligne:
-            # Teste si l'acide aminé en question correspond à l'acide aminé de la séquence associé (saute les AA non résolus spatialement)
-            if seq[indice_seq] not in ligne[3]:
-                indice_seq +=1
-                index_corr +=1
+            
+            # Si l'AA est annoté sous plusieurs états différents
+            if len(ligne[3]) > 3:
+                # Si AA est en plusieurs etats différents (ALEU/BLEU)
+                ligne_bis = PDB[i+1].split()
+                ligne_a_compter = 1
+                liste_x = [float(ligne[6])]
+                liste_y = [float(ligne[7])]
+                liste_z = [float(ligne[8])]
+
+                nbr_de_ligne_bis = 1
+                # Parcourt toutes les lignes avec les potentiels variants des AA et ajoute les coordonnées
+                while atom in ligne_bis:
+                    liste_x.append(float(ligne_bis[6]))
+                    liste_y.append(float(ligne_bis[7]))
+                    liste_z.append(float(ligne_bis[8]))
+                    ligne_a_compter += 1
+                    ligne_bis = PDB[i+ligne_a_compter].split()
+                    nbr_de_ligne_bis += 1
+                # moyenne des coordonnées des deux états
+                x, y, z, pos = np.mean(liste_x) , np.mean(liste_y), np.mean(liste_z),  ligne[5]
+                dico_atome[atome + "MOY" + pos] = [round(x,3) , round(y,3), round(z,3)]
+                longueur_seq_resolue += 1
+                # Saute le 2e CA de l'AA dans le second état ou plus
+                i += nbr_de_ligne_bis
+                
             else:
-                # Si l'AA est annoté sous plusieurs états différents
-                if len(ligne[3]) > 3:
-                    # Si AA est en plusieurs etats différents (ALEU/BLEU)
-
-                    #moyenne des coordonnées des deux états
-                    x, y, z, pos = np.mean(float(ligne[6]) + float(ligne_bis[6])), np.mean(float(ligne[7]) + float(ligne_bis[7])), np.mean(float(ligne[8]) + float(ligne_bis[8])), ligne[5]
-                    dico_atome[atome + pos] = [x,y,z]
-                    longueur_seq_resolue += 1
-                    # nb += 1
-                    # Saute le 2e CA de l'AA dans le second état
-                    i += 4
-                    indice_seq +=1
-                    
-                else:
-                    x, y, z, pos= ligne[6], ligne[7], ligne[8], ligne[5]
-                    dico_atome[atome + pos] = [x,y,z]
-                    longueur_seq_resolue += 1
-                    # nb += 1
+                x, y, z, pos= ligne[6], ligne[7], ligne[8], ligne[5]
+                dico_atome[atome + pos] = [x,y,z]
+                longueur_seq_resolue += 1
+                # Passe à la ligne suivante si elle commence par ATOM
+                if PDB[i+1][0:4] == "ATOM": 
                     i += 1
-                    indice_seq +=1
-
+                # Si on a une ligne ANISOU entre les lignes ATOm, on la passe
+                else:
+                    i += 2
+        # Si la ligne ne contient pas CA ou SG, on passe à celle d'après
         else:
             i+=1
     return dico_atome, longueur_seq_resolue
@@ -370,6 +381,10 @@ def pontdisulfure(PDB, atom):
     
     if secreted(PDB):
         dico_distance = calcul_distance(PDB, atom)
+
+        if dico_distance == {}:
+            return "Aucun cystéine n'est présente dans votre séquence"
+
         dico_pontdi = {}
         dico_non_pont = {}
         for atome in dico_distance.keys():
@@ -381,6 +396,10 @@ def pontdisulfure(PDB, atom):
     
     else:
         dico_distance = calcul_distance(PDB, atom)
+
+        if dico_distance == {}:
+            return "Aucun cystéine n'est présente dans votre séquence"
+        
         dico_pontdi = {}
         dico_non_pont = {}
         for atome in dico_distance.keys():
@@ -454,12 +473,12 @@ def graph_matrice(PDB):
 
 #====================================================================================================================
 
-fiche_pdb = importation_online("6I9K")
+fiche_pdb = importation_online("1CRN")
 # print(fiche_pdb)
 # print(distance_carbone_alpha(fiche_pdb))
 # print(matrice_contact(fiche_pdb))
-# # print(coordonnees(fiche_pdb, "CA"))
-print(pontdisulfure(fiche_pdb, "SG"))
+# print(coordonnees(fiche_pdb, "CA"))
+# print(pontdisulfure(fiche_pdb, "SG"))
 # print(graph_matrice(fiche_pdb))
 
 # print(secreted(fiche_pdb))
@@ -483,3 +502,8 @@ print(pontdisulfure(fiche_pdb, "SG"))
 # print(FASTA(fiche_pdb))
 
 # print(info_imp(fiche_pdb))
+
+
+
+
+# https://github.com/Edmondbrn/Projet-python-GB4

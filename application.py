@@ -453,7 +453,6 @@ class Application:
             self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.description))
 
         elif event.ui_element == self.bouton_fiche_PDB :
-            # self.fiche_pdb = F.info_imp(F.importation_online(self.entreeTexte.text))
             self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.fiche_pdb))
 
 
@@ -470,7 +469,7 @@ class Application:
 
         elif event.ui_element == self.bouton_affichage_fichierFASTA:
             self.page = 5
-            self.texte = str(F.fusion(F.importation_online(self.entreeTexte.text)))
+            self.texte = str(F.fusion(self.fiche_pdb))
             self.affichageFichierFASTA.set_text(f'<font face=arial size=4 color=#FFFFFF>{self.texte}</font><br>')
 
             self.Titre_fenêtre = "Séquence au format FASTA"
@@ -492,7 +491,7 @@ class Application:
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
 
         elif event.ui_element == self.bouton_sequence_FASTA2:
-            self.texte = F.fusion(F.importation_online(self.entreeTexte.text))
+            self.texte = F.fusion(self.fiche_pdb)
             self.affichageFichierFASTA.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.texte))
 
             self.Titre_fenêtre = "Séquence FASTA"
@@ -502,25 +501,43 @@ class Application:
 
           
         elif event.ui_element == self.bouton_analyse_AA :
-            self.texte = str(F.tableau_bilan_AA(F.importation_online(self.entreeTexte.text)))
+            self.texte = str(F.tableau_bilan_AA(self.fiche_pdb))
             self.affichageFichierFASTA.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.texte))
 
             self.Titre_fenêtre = "Analyse composition en acide aminé"
             self.page5.fill(COULEUR_FOND)
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
-            print(F.graphique_aa(F.importation_online(self.entreeTexte.text)))
+            F.graphique_aa(self.fiche_pdb)
 
         elif event.ui_element == self.bouton_modif_Pymol :
             self.page = 6
 
-        elif event.ui_element == self.bouton_matrice_de_contact:
-            self.matrice = F.matrice_contact(F.importation_online(self.entreeTexte.text))
-            self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.matrice))
 
         elif event.ui_element == self.bouton_Retour :
             self.page = 3
 
-            
+        elif event.ui_element == self.bouton_matrice_de_contact:
+            F.graph_matrice(self.fiche_pdb)
+            self.matrice = F.matrice_contact(self.fiche_pdb)
+            self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.matrice))
+
+        elif event.ui_element == self.bouton_Pontdisulfure:
+            self.dico = F.pontdisulfure(self.fiche_pdb, "SG")
+            if type(self.dico) == str :
+                 self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.dico))
+            else:
+                self.texte = ""
+                self.k = 0
+                for element in self.dico:
+                    if self.k == 0:
+                        self.en_tete = "Il y a un pontdisulfure entre les "
+                    else:
+                        self.en_tete = "Les cystéines suivantes sont libres  "
+                    for donnee in element.keys():
+                        self.texte += self.en_tete + donnee + " ("+str(round(element[donnee], 2))+" A)" + "\n"
+                    self.k += 1
+                self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.texte))
+
             
     
     
