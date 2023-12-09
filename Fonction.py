@@ -467,6 +467,24 @@ def graph_matrice(PDB):
     return plt.show()
 
 
+def fichier_pdb(PDB):
+    fh = open("newfichier.pdb",'w')
+    PDB = PDB.split("\n")
+    for line in PDB:
+        if line[0:4] == "ATOM":
+            #line = line.split()
+            print(line[-17:-12])
+            nvline = line[:62] + "500" + line[-12:-1]
+            print(nvline)
+            #line = " ".join(line )
+            fh.write(line + "\n")
+        else:
+            fh.write(line + "\n")
+    fh.close()
+    return fh
+
+
+
 #====================================================================================================================
 
                                                     # Script #
