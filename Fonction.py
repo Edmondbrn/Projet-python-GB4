@@ -438,8 +438,8 @@ def matrice_contact(PDB):
             pos_cel +=1
             k+=1
   
-    # pd.set_option('display.max_rows', None)
-    # pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_columns', None)
     
 
     return df
@@ -491,8 +491,9 @@ def classe(AA, classification, PDB):
         df = tableau_bilan_AA(PDB)
         code_acide_amine = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V"}
         acide_amine_1_lettre = code_acide_amine[AA]
-
+        # Sélectionne la ligne pour l'acide aminé dans la colonne fréquence
         donnee = df.loc[df["AA"]== acide_amine_1_lettre]["Freq"]
+        # Renvoie uniquement la valeur de la fréquence
         return round(donnee.iloc[0])
         
 
@@ -504,13 +505,43 @@ def fichier_pdb(PDB, Classification):
     for line in PDB2:
         if line[0:4] == "ATOM":
             AA = line[17:20]
-            nv_B_Factor = classe(AA, "frequence", PDB)
+            nv_B_Factor = classe(AA, Classification, PDB)
             nvline = line[:61] + str(nv_B_Factor) + line[-12:-1]
             fh.write(nvline + "\n")
         else:
             fh.write(line + "\n")
     fh.close()
     return fh
+
+
+def mise_en_page(titre):
+    texte_separation = "="*200 +"\n" + " "*90 + titre + "\n" + "="*200 + "\n"*2
+    return texte_separation
+
+def fichier_bilan(PDB):
+    fh = open("Fichier bilan.txt","w", encoding= "utf-8")
+    fh.write(mise_en_page("Séquence FASTA"))
+    fh.write(fusion(PDB) + "\n"*2)
+
+    fh.write(mise_en_page("Informations importantes"))
+    fh.write(info_imp(PDB) + "\n"*2)
+
+    fh.write(mise_en_page("Analyse des proportions des acides aminés"))
+    fh.write(str(tableau_bilan_AA(PDB))+ "\n"*2)
+
+    fh.write(mise_en_page("Pontdisulfures"))
+    dico_ptdi, dico_non_ptdi = pontdisulfure(PDB, "SG")
+    for element in dico_ptdi.keys():
+        fh.write("Le cystéines suivantes sont liées: " + element + " à une distance de: " + str(round(dico_ptdi[element], 2)) + "A\n")
+    for element in dico_non_ptdi.keys():
+        fh.write("Le cystéines suivantes ne sont pas liées:" + element + "à une distance de: " + str(round(dico_non_ptdi[element], 2)) + "A\n")
+
+
+    return fh.close()
+
+
+
+
 
 
 
@@ -528,7 +559,9 @@ fiche_pdb = importation_online("1CRN")
 # print(coordonnees(fiche_pdb, "CA"))
 # print(pontdisulfure(fiche_pdb, "SG"))
 # print(graph_matrice(fiche_pdb))
-print(fichier_pdb(fiche_pdb, "polarite"))
+# print(fichier_pdb(fiche_pdb, "polarite"))
+# print(pontdisulfure(fiche_pdb, "SG"))
+# print(fichier_bilan(fiche_pdb))
 # print(secreted(fiche_pdb))
 
 # Dico_distance = calcul_distance(dico)
