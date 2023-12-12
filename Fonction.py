@@ -87,7 +87,7 @@ def FASTA(PDB):
         liste_AA+= ligne[4:]
         i+=1
 
-    code_acide_amine = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V",}
+    code_acide_amine = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V"}
 
 
     # Création de la liste pour accueillir la séquence à une lettre
@@ -467,21 +467,51 @@ def graph_matrice(PDB):
     return plt.show()
 
 
-def fichier_pdb(PDB):
+def classe(AA, classification, PDB):
+
+    if classification == "polarite":
+        polaires_non_charges = ('SER', 'THR', 'ASN', 'GLN', 'CYS')
+        polaires_acides =  ('ASP', 'GLU')
+        polaires_basiques = ('LYS', 'ARG', 'HIS')
+        apolaires_non_aromatiques = ('GLY', 'ALA', 'VAL', 'LEU', 'ILE', 'PRO',"MET")
+        apolaires_aromatiques = ('PHE', 'TYR', 'TRP')
+        dico_polarité = {polaires_non_charges: 1, polaires_acides: 200, polaires_basiques: 400, apolaires_non_aromatiques: 600, apolaires_aromatiques : 800}
+        for element in dico_polarité.keys():
+            if AA in element:
+                return dico_polarité[element]
+    
+    elif classification == "poids":
+        poids_moleculaires_aa = {'ALA': 89.09,'ARG': 174.20,'ASN': 132.12,'ASP': 133.10,'CYS': 121.15,
+                                 'GLN': 146.15, 'GLU': 147.13, 'GLY': 75.07, 'HIS': 155.16, 'ILE': 131.18,
+                                 'LEU': 131.18, 'LYS': 146.19, 'MET': 149.21, 'PHE': 165.19, 'PRO': 115.13, 
+                                 'SER': 105.09,'THR': 119.12, 'TRP': 204.23, 'TYR': 181.19, 'VAL': 117.15}
+        return poids_moleculaires_aa[AA]*4
+
+    elif classification == "frequence":
+        df = tableau_bilan_AA(PDB)
+        code_acide_amine = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V"}
+        acide_amine_1_lettre = code_acide_amine[AA]
+
+        donnee = df.loc[df["AA"]== acide_amine_1_lettre]["Freq"]
+        return round(donnee.iloc[0])
+        
+
+
+
+def fichier_pdb(PDB, Classification):
     fh = open("newfichier.pdb",'w')
-    PDB = PDB.split("\n")
-    for line in PDB:
+    PDB2 = PDB.split("\n")
+    for line in PDB2:
         if line[0:4] == "ATOM":
-            #line = line.split()
-            print(line[-17:-12])
-            nvline = line[:62] + "500" + line[-12:-1]
-            print(nvline)
-            #line = " ".join(line )
-            fh.write(line + "\n")
+            AA = line[17:20]
+            nv_B_Factor = classe(AA, "frequence", PDB)
+            nvline = line[:61] + str(nv_B_Factor) + line[-12:-1]
+            fh.write(nvline + "\n")
         else:
             fh.write(line + "\n")
     fh.close()
     return fh
+
 
 
 
@@ -498,7 +528,7 @@ fiche_pdb = importation_online("1CRN")
 # print(coordonnees(fiche_pdb, "CA"))
 # print(pontdisulfure(fiche_pdb, "SG"))
 # print(graph_matrice(fiche_pdb))
-
+print(fichier_pdb(fiche_pdb, "polarite"))
 # print(secreted(fiche_pdb))
 
 # Dico_distance = calcul_distance(dico)
