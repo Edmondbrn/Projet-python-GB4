@@ -438,8 +438,8 @@ def matrice_contact(PDB):
             pos_cel +=1
             k+=1
   
-    pd.set_option('display.max_rows', None)
-    pd.set_option('display.max_columns', None)
+    # pd.set_option('display.max_rows', None)
+    # pd.set_option('display.max_columns', None)
     
 
     return df
@@ -456,7 +456,9 @@ def graph_matrice(PDB):
     # Création du dégradé de couleur avec seaborn
     cmap = sb.color_palette("rainbow", as_cmap=True)
 
-    contour = plt.contourf(mat, levels=7, cmap=cmap, alpha=1)
+    # contour = plt.imshow(mat, cmap="jet", alpha=1, interpolation = "quadric")
+    contour = plt.contourf(mat, cmap = cmap,levels = 7, alpha = 1)
+
     # Ajouter une barre de couleur pour le tracé de contour
     legende = plt.colorbar(contour, ax=ax, orientation="vertical", shrink=0.75)
     legende.set_label('Distance (A)', rotation=90, labelpad=15)
@@ -552,13 +554,13 @@ def fichier_bilan(PDB):
 
 #====================================================================================================================
 
-fiche_pdb = importation_online("1CRN")
+fiche_pdb = importation_online("1GC6")
 # print(fiche_pdb)
 # print(distance_carbone_alpha(fiche_pdb))
 # print(matrice_contact(fiche_pdb))
 # print(coordonnees(fiche_pdb, "CA"))
 # print(pontdisulfure(fiche_pdb, "SG"))
-# print(graph_matrice(fiche_pdb))
+print(graph_matrice(fiche_pdb))
 # print(fichier_pdb(fiche_pdb, "polarite"))
 # print(pontdisulfure(fiche_pdb, "SG"))
 # print(fichier_bilan(fiche_pdb))
