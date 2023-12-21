@@ -6,8 +6,7 @@
 
 import urllib.request
 import ssl
-import sys
-import platform
+
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sb
@@ -75,8 +74,5 @@ def hydrophobicite(sequence):
         liste_moyenne_hydrophobicite.append(np.mean(liste_hydrophobicite))
     return liste_moyenne_hydrophobicite
     
-liste = hydrophobicite(seq)
-sb.lineplot(liste)
-plt.show()
 
     

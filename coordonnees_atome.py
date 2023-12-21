@@ -5,12 +5,14 @@
 #====================================================================================================================
 
 
-from Info_imp import FASTA
+from Info_imp import info_imp
 from math import sqrt
 
-
-
-
+import numpy as np
+import urllib.request
+import ssl
+import sys
+import platform
 #====================================================================================================================
 
                                         # Création des fonctions #
@@ -20,7 +22,6 @@ from math import sqrt
 
 def coordonnees(PDB, atom):
     """Fonction qui extrait les coordonnées dans l'espace d'un atome précis donné"""
-    _, seq = FASTA(PDB)
     # seq = list(seq.replace("\n",""))
 
     if atom == "SG":

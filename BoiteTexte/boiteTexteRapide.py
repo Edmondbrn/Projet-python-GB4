@@ -3,7 +3,7 @@ import txt
 import pygame as pg
 
 
-class BoiteTexte:
+class boiteTexteRapide:
 	"""
 	Cette classe permet de créer une surface pour afficher du texte
 	"""
@@ -16,11 +16,13 @@ class BoiteTexte:
 				couleurBordure=(50, 50, 50),
 				texte="",
 				couleurTexte=(255, 255, 255),
+				texteGras=True,
 				police=None,
-				taillePolice=16,
+				taillePolice=24,
 				espaceTexteBord=10,
 				espaceLigne=5,
 				largeurScrollBar=15,
+				vitesseScroll=1,
 				couleurCurseur=(150, 150, 150)
 				) -> None:
 		# Informations générales
@@ -71,16 +73,27 @@ class BoiteTexte:
 
 		# Variable pour le texte
 		self.police = police
+		self.texteGras = texteGras
 		self.taillePolice = taillePolice
 		self.couleurTexte = couleurTexte
 		self.espaceLigne = espaceLigne
 		self.espaceTexteBord = espaceTexteBord
 
+		policeTexte = pg.font.SysFont(police, taillePolice)
+		policeTexte.set_bold(True)
+		imageTexte = policeTexte.render("Aj", True, couleurTexte)
+		self.hauteurLigne = imageTexte.get_height()
+
+		self.couleurCurseur = couleurCurseur
+		self.vitesseScroll = vitesseScroll
+
+		self.changeTexte(texte)
+
+
+	def changeTexte(self, texte):
 		self.debutY = 0
 
-		# Pre-rendu des lignes
 		self.lignes = []
-		maxLargeurLigne = self.tailleFond[0] + self.epaisseurBordure * 2 - self.espaceTexteBord * 2
 		ligne = ""
 		for caractere in texte:
 			if caractere != '\n':
@@ -88,23 +101,7 @@ class BoiteTexte:
 			else:
 				if caractere != '\n':
 					ligne += caractere
-				renduLigne = txt.surfaceTexte(ligne, self.couleurTexte, self.taillePolice, self.police)
-				# La ligne est trop grande
-				if renduLigne.get_width() > maxLargeurLigne:
-					resteLigne = ligne
-					while resteLigne != "":
-						ligneDessus = resteLigne
-						resteLigne = ""
-						renduLigne = txt.surfaceTexte(ligneDessus, self.couleurTexte, self.taillePolice, self.police)
-						while renduLigne.get_width() > maxLargeurLigne:
-							c = ligneDessus[-1]
-							ligneDessus = ligneDessus[:len(ligneDessus) - 1]
-							resteLigne = c + resteLigne
-							renduLigne = txt.surfaceTexte(ligneDessus, self.couleurTexte, self.taillePolice, self.police)
-						self.lignes.append(renduLigne)
-				# La ligne est de la bonne taille
-				else:
-					self.lignes.append(renduLigne)
+				self.lignes.append(ligne)
 				ligne = ""
 
 		if len(ligne) > 0:
@@ -112,22 +109,19 @@ class BoiteTexte:
 
 		self.nombreLigne = len(self.lignes)
 
-		self.totalHauteurLigne = 0
-
-		for ligne in self.lignes:
-			self.totalHauteurLigne += ligne.get_height() + self.espaceLigne
-
-		self.totalHauteurLigne -= self.lignes[-1].get_height() + self.espaceLigne
+		self.totalHauteurLigne = (self.hauteurLigne + self.espaceLigne) * (self.nombreLigne - 1)
 
 		# Calcule de la taille du curseur
 		self.hauteurMax = self.tailleFond[1] - 2 * self.epaisseurBordure
-		self.hauteurCurseur = self.hauteurMax / self.totalHauteurLigne
+		if self.totalHauteurLigne != 0:
+			self.hauteurCurseur = self.hauteurMax / self.totalHauteurLigne
+		else:
+			self.hauteurCurseur = self.hauteurMax
 		self.hauteurCurseur *= self.hauteurMax
 		if self.hauteurCurseur < 1:
 			self.hauteurCurseur = 1
 		self.hauteurMax -= self.hauteurCurseur
 		self.largeurCurseur = self.largeurScrollBar - self.epaisseurBordure
-		self.couleurCurseur = couleurCurseur
 
 		# Rendu de la boite texte
 		self._faireRenduBoiteTexte()
@@ -142,15 +136,18 @@ class BoiteTexte:
 		i = 0
 		while i < self.nombreLigne and positionY < self.tailleFond[1]:
 			if positionY >= 0:
-				self.dessinBoiteTexte.blit(self.lignes[i], (positionX, positionY))
-			positionY += self.lignes[i].get_height() + self.espaceLigne
+				txt.dessinerTexte(self.dessinBoiteTexte, self.lignes[i], (positionX, positionY), self.couleurTexte, self.taillePolice, self.police, self.texteGras)
+			positionY += self.hauteurLigne + self.espaceLigne
 			i += 1
 
 		self.dessinBoiteTexte.blit(self.bordure, (0, 0))
 
 		# Dessin de la scrollBar
 		self.dessinScrollBar = self.fondScrollBar.copy()
-		positionY = (self.debutY * -1) / self.totalHauteurLigne
+		if self.totalHauteurLigne != 0:
+			positionY = (self.debutY * -1) / self.totalHauteurLigne
+		else:
+			positionY = 0
 		positionY *= self.hauteurMax
 		positionY += self.epaisseurBordure
 
@@ -179,18 +176,17 @@ class BoiteTexte:
 			self.epaisseurBordure)
 
 
-
 	def tick(self, positionSourie:tuple[int, int], etatSourie:tuple[bool, bool, bool], scrollSourie:int):
 		if positionSourie[0] >= self.position[0] and positionSourie[0] <= self.position[0] + self.tailleFond[0] \
 			and positionSourie[1] >= self.position[1] and positionSourie[1] <= self.position[1] + self.tailleFond[1]:
 
 			if scrollSourie < 0:
-				self.debutY -= 20
+				self.debutY -= self.hauteurLigne * self.vitesseScroll
 				if self.debutY < -self.totalHauteurLigne:
 					self.debutY = -self.totalHauteurLigne
 				self._faireRenduBoiteTexte()
 			if scrollSourie > 0:
-				self.debutY += 20
+				self.debutY += self.hauteurLigne * self.vitesseScroll
 				if self.debutY > 0:
 					self.debutY = 0
 				self._faireRenduBoiteTexte()
@@ -204,6 +200,7 @@ class BoiteTexte:
 				if self.debutY < -self.totalHauteurLigne:
 					self.debutY = -self.totalHauteurLigne
 				self._faireRenduBoiteTexte()
+
 
 	def draw(self, window:pg.surface.Surface):
 		window.blit(self.dessinBoiteTexte, self.position)

@@ -554,13 +554,13 @@ def fichier_bilan(PDB):
 
 #====================================================================================================================
 
-fiche_pdb = importation_online("1GC6")
+# fiche_pdb = importation_online("1GC6")
 # print(fiche_pdb)
 # print(distance_carbone_alpha(fiche_pdb))
 # print(matrice_contact(fiche_pdb))
 # print(coordonnees(fiche_pdb, "CA"))
 # print(pontdisulfure(fiche_pdb, "SG"))
-print(graph_matrice(fiche_pdb))
+# print(graph_matrice(fiche_pdb))
 # print(fichier_pdb(fiche_pdb, "polarite"))
 # print(pontdisulfure(fiche_pdb, "SG"))
 # print(fichier_bilan(fiche_pdb))

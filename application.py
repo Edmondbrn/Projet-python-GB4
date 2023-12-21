@@ -4,11 +4,18 @@
 from globale import *
 import os
 
+from BoiteTexte.boiteTexteRapide  import boiteTexteRapide
+
 import pygame as pg
 import pygame_gui as pgg
 import txt
+from Recuperation_fichier import importation_locale, importation_online
+from Info_imp import info_imp, fusion
+from Composition_AA import graphique_aa, tableau_bilan_AA
+# from Profil_hydrophobicite import
+from coordonnees_atome import pontdisulfure
+from Matrice_contact import graph_matrice
 
-import Fonction as F
 
 ###############################################################
 #                   Création de la classe                     #
@@ -176,14 +183,13 @@ class Application:
         # GUI manager permet de créer des boutons directement
         self.managerPage3 = pgg.UIManager(TAILLE_FENETRE)
 
+        self.affichageFichier = boiteTexteRapide(
+                                    (TAILLE_FENETRE[0] // 4, TAILLE_FENETRE[1] // 8),
+                                    tailleAffichageFichier,
+                                    police="monospace",
+                                    taillePolice=15,
+                                    vitesseScroll=4)
 
-        self.affichageFichier = pgg.elements.UITextBox(
-                                "",
-                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 3.5,
-                                                       TAILLE_FENETRE[1] // 8),
-                                                       tailleAffichageFichier), # (x, y) et (largeur, hauteur)
-                                manager=self.managerPage3)
-        
         #Création des boutons de la page
         tailleBouton = (200, 50)
         ecartEntreBouton = 16
@@ -279,6 +285,7 @@ class Application:
         txt.dessinerTexte(self.page4, "Voulez-vous uniquement afficher", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=taillePolice)
         txt.dessinerTexte(self.page4, "ou télécharger la séquence au format FASTA ?", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3 + taillePolice), alignement="milieu-centre", taillePolice=taillePolice)
 
+
     def _creerPage5(self):
         """
         Méthode pour créer la page d'analyse de la séquence protéique (hydrophobicité et composition en AA)
@@ -287,18 +294,19 @@ class Application:
         # Couleur du fond, marche en RGB aussi (0,0,0)
         self.page5.fill(COULEUR_FOND)
 
-        tailleAffichageFichier = (800, 600)
+        #tailleAffichageFichier = (800, 600)
 
         # GUI manager permet de créer des boutons directement
         self.managerPage5 = pgg.UIManager(TAILLE_FENETRE)
 
         # Affichage de la boite de texte pour contenir la séquence
-        self.affichageFichierFASTA = pgg.elements.UITextBox(
-                                "",
-                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 3.5,
-                                                       TAILLE_FENETRE[1] // 8),
-                                                       tailleAffichageFichier), # (x, y) et (largeur, hauteur)
-                                manager=self.managerPage5)
+
+        #self.affichageFichierFASTA = pgg.elements.UITextBox(
+        #                        "",
+        #                        relative_rect=pg.Rect((TAILLE_FENETRE[0] // 3.5,
+        #                                               TAILLE_FENETRE[1] // 8),
+        #                                               tailleAffichageFichier), # (x, y) et (largeur, hauteur)
+        #                        manager=self.managerPage5)
         
         #Création des boutons de la page
         tailleBouton = (200, 50)
@@ -334,6 +342,8 @@ class Application:
                                 manager=self.managerPage5)
 
         self.taillePolice = 40
+        txt.dessinerTexte(self.page5, "Séquence FASTA", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=20)
+
        
     def _creerPage6(self):
         """
@@ -356,6 +366,14 @@ class Application:
                                 text="Fiche PDB",
                                 manager=self.managerPage6)
 
+        self.bouton_Frequence = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 6 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] * 5/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Selon les fréquences",
+                                manager=self.managerPage6)
+
+
         txt.dessinerTexte(self.page6, "Veuillez choisir votre option" , (TAILLE_FENETRE[0]* 6/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
 
 
@@ -368,10 +386,14 @@ class Application:
         et effectuer les changements en fonction de ceux ci
         """
         # On boucle parmi tous les évenements de la fenêtre
+        self.scrollSourie = 0
         for event in pg.event.get():
             # Si on a appuyé sur la croix
             if event.type == pg.QUIT:
                 self._quit()
+
+            if event.type == pg.MOUSEWHEEL:
+                self.scrollSourie = event.y
             
             if event.type == pgg.UI_BUTTON_PRESSED:
                 self._gererAppuiBouton(event)
@@ -410,10 +432,12 @@ class Application:
             self.managerPage2.update(self.deltaTime)
         if self.page == 3:
             self.managerPage3.update(self.deltaTime)
+            self.affichageFichier.tick(self.positionSouris, self.etatSouris, self.scrollSourie)
         if self.page == 4:
             self.managerPage4.update(self.deltaTime)
         if self.page == 5:
             self.managerPage5.update(self.deltaTime)
+            self.affichageFichier.tick(self.positionSouris, self.etatSouris, self.scrollSourie)
         if self.page == 6:
             self.managerPage6.update(self.deltaTime)
         
@@ -424,18 +448,16 @@ class Application:
 
         elif event.ui_element == self.boutonVersPage3:
             self.page = 3
-            self.fiche_pdb = F.importation_locale(self.entreeTexte.text)
+            self.fiche_pdb = importation_locale(self.entreeTexte.text)
 
-            self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{0}</font><br>'.format(self.fiche_pdb))
-
-
+            self.affichageFichier.changeTexte(self.fiche_pdb)
 
         elif event.ui_element == self.bouton_enregistrement_fichier_Oui:
             self.page = 3
-            self.fiche_pdb = F.importation_online(self.entreeTexte.text)
+            self.fiche_pdb = importation_online(self.entreeTexte.text)
 
 
-            self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{0}</font><br>'.format(self.fiche_pdb))
+            self.affichageFichier.changeTexte(self.fiche_pdb)
 
             fh = open(self.entreeTexte.text+".pdb", "w")
             fh.write(self.fiche_pdb)
@@ -443,19 +465,17 @@ class Application:
         
         elif event.ui_element == self.bouton_enregistrement_fichier_Non:
             self.page = 3
-            self.fiche_pdb = F.importation_online(self.entreeTexte.text)
+            self.fiche_pdb = importation_online(self.entreeTexte.text)
 
-            self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{0}</font><br>'.format(self.fiche_pdb))
+            self.affichageFichier.changeTexte(self.fiche_pdb)
+
 
         elif event.ui_element == self.bouton_analyse_generale:
-
-            self.description = F.info_imp(F.importation_online(self.entreeTexte.text))
-            self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.description))
+            self.description = info_imp(self.fiche_pdb)
+            self.affichageFichier.changeTexte(self.description)
 
         elif event.ui_element == self.bouton_fiche_PDB :
-            self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.fiche_pdb))
-
-
+            self.affichageFichier.changeTexte(self.fiche_pdb)
 
         elif event.ui_element == self.bouton_sequence_FASTA:
             self.page = 4
@@ -469,8 +489,9 @@ class Application:
 
         elif event.ui_element == self.bouton_affichage_fichierFASTA:
             self.page = 5
-            self.texte = str(F.fusion(self.fiche_pdb))
-            self.affichageFichierFASTA.set_text(f'<font face=arial size=4 color=#FFFFFF>{self.texte}</font><br>')
+            self.seq_FASTA = str(fusion(self.fiche_pdb))
+            self.texte = self.seq_FASTA
+            self.affichageFichier.changeTexte(self.texte)
 
             self.Titre_fenêtre = "Séquence au format FASTA"
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
@@ -483,7 +504,7 @@ class Application:
         elif event.ui_element == self.bouton_sequence_hydropobicité:
             # Change le texte dans la tchat box
             self.texte = "Profil hydrophobicité"
-            self.affichageFichierFASTA.set_text(f'<font face=arial size=4 color=#FFFFFF>{self.texte}</font><br>')
+            self.affichageFichier.changeTexte(self.texte)
             self.Titre_fenêtre = "Profil d'hydrophobicité"
 
             # Change le titre de la page
@@ -491,40 +512,40 @@ class Application:
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
 
         elif event.ui_element == self.bouton_sequence_FASTA2:
-            self.texte = F.fusion(self.fiche_pdb)
-            self.affichageFichierFASTA.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.texte))
+            self.texte = self.seq_FASTA
+            self.affichageFichier.changeTexte(self.texte)
 
             self.Titre_fenêtre = "Séquence FASTA"
             self.page5.fill(COULEUR_FOND)
             
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
 
-          
         elif event.ui_element == self.bouton_analyse_AA :
-            self.texte = str(F.tableau_bilan_AA(self.fiche_pdb))
-            self.affichageFichierFASTA.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.texte))
+            self.texte = str(tableau_bilan_AA(self.fiche_pdb))
+            self.affichageFichier.changeTexte(self.texte)
 
             self.Titre_fenêtre = "Analyse composition en acide aminé"
             self.page5.fill(COULEUR_FOND)
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
-            F.graphique_aa(self.fiche_pdb)
+            graphique_aa(self.fiche_pdb)
 
         elif event.ui_element == self.bouton_modif_Pymol :
             self.page = 6
-
 
         elif event.ui_element == self.bouton_Retour :
             self.page = 3
 
         elif event.ui_element == self.bouton_matrice_de_contact:
-            F.graph_matrice(self.fiche_pdb)
-            self.matrice = F.matrice_contact(self.fiche_pdb)
-            self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.matrice))
+            graph_matrice(self.fiche_pdb)
+            self.matrice = "La matrice a bien été sauvegardée"
+            #self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.matrice))
+            self.affichageFichier.changeTexte(str(self.matrice))
 
         elif event.ui_element == self.bouton_Pontdisulfure:
-            self.dico = F.pontdisulfure(self.fiche_pdb, "SG")
+            self.dico = pontdisulfure(self.fiche_pdb, "SG")
             if type(self.dico) == str :
-                 self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.dico))
+                # self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.dico))
+                 self.affichageFichier.changeTexte(self.dico)
             else:
                 self.texte = ""
                 self.k = 0
@@ -536,10 +557,9 @@ class Application:
                     for donnee in element.keys():
                         self.texte += self.en_tete + donnee + " ("+str(round(element[donnee], 2))+" A)" + "\n"
                     self.k += 1
-                self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.texte))
-
+                #self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.texte))
+                self.affichageFichier.changeTexte(self.texte)
             
-    
     
     def _dessiner(self):
         """
@@ -557,6 +577,7 @@ class Application:
         elif self.page == 3:
             self.fenetre.blit(self.page3, (0, 0))
             self.managerPage3.draw_ui(self.fenetre)
+            self.affichageFichier.draw(self.fenetre)
 
         elif self.page == 4:
             self.fenetre.blit(self.page4, (0, 0))
@@ -565,13 +586,11 @@ class Application:
         elif self.page == 5:
             self.fenetre.blit(self.page5, (0, 0))
             self.managerPage5.draw_ui(self.fenetre)
+            self.affichageFichier.draw(self.fenetre)
 
         elif self.page == 6:
             self.fenetre.blit(self.page6, (0, 0))
             self.managerPage6.draw_ui(self.fenetre)
-        
-        
-        
 
         # On actualise l'affichage de la fenêtre
         pg.display.update()
@@ -602,6 +621,7 @@ class Application:
 
 # Lancement de pygame
 pg.init()
+
 
 app = Application()
 
