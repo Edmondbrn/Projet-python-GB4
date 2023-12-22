@@ -246,7 +246,7 @@ class Application:
                                 relative_rect=pg.Rect((TAILLE_FENETRE[0] // 8 - tailleBouton[0] // 2,
                                                        TAILLE_FENETRE[1] *7/10  + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
                                                        tailleBouton), # (x, y) et (largeur, hauteur)
-                                text="Fichie PDB",
+                                text="Fiche PDB",
                                 manager=self.managerPage3)
         taillePolice = 40
         txt.dessinerTexte(self.page3, "Fiche PDB", (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=taillePolice)
@@ -367,11 +367,27 @@ class Application:
                                 manager=self.managerPage6)
 
         self.bouton_Frequence = pgg.elements.UIButton(
-                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 6 - tailleBouton[0] // 2,
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 3.2 - tailleBouton[0] // 2,
                                                        TAILLE_FENETRE[1] * 5/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
                                                        tailleBouton), # (x, y) et (largeur, hauteur)
                                 text="Selon les fréquences",
                                 manager=self.managerPage6)
+        
+        self.bouton_poids = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 2 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] * 5/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Selon la masse des AA",
+                                manager=self.managerPage6)
+        
+        self.bouton_polarité = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 1.45 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] * 5/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Selon la polarité",
+                                manager=self.managerPage6)
+
+
 
 
         txt.dessinerTexte(self.page6, "Veuillez choisir votre option" , (TAILLE_FENETRE[0]* 6/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
