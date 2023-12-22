@@ -548,45 +548,5 @@ def fichier_bilan(PDB):
 
 
 
-#====================================================================================================================
-
-                                                    # Script #
-
-#====================================================================================================================
-
-# fiche_pdb = importation_online("1GC6")
-# print(fiche_pdb)
-# print(distance_carbone_alpha(fiche_pdb))
-# print(matrice_contact(fiche_pdb))
-# print(coordonnees(fiche_pdb, "CA"))
-# print(pontdisulfure(fiche_pdb, "SG"))
-# print(graph_matrice(fiche_pdb))
-# print(fichier_pdb(fiche_pdb, "polarite"))
-# print(pontdisulfure(fiche_pdb, "SG"))
-# print(fichier_bilan(fiche_pdb))
-# print(secreted(fiche_pdb))
-
-# Dico_distance = calcul_distance(dico)
-
-
-# print(recuperation_code_Uniprot(fiche_pdb))
-# print(importation_online_uniprot(fiche_pdb))
-
-# df = (tableau_bilan_AA(fiche_pdb))
-
-
-# print(composition_AA(fiche_pdb))
-
-# print(graphique_aa(fiche_pdb))
-
-# print(info_imp(fiche_pdb))
-
-#print(fusion(fiche_pdb))
-# print(FASTA(fiche_pdb))
-
-# print(info_imp(fiche_pdb))
-
-
-
 
 # https://github.com/Edmondbrn/Projet-python-GB4
