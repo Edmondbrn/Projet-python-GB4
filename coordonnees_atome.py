@@ -151,6 +151,7 @@ def pontdisulfure(PDB, atom):
     """Calcule la présence ou non de pontdisulfure entre les protéines"""
     
     if secreted(PDB):
+        Annonce = "La protéine est sécrétée selon sa fiche Uniprot.\nLes pontdisulfures prédis existent donc bel et bien."
         dico_distance = calcul_distance(PDB, atom)
 
         if dico_distance == {}:
@@ -163,9 +164,11 @@ def pontdisulfure(PDB, atom):
                 dico_pontdi[atome] = dico_distance[atome]
             else:
                 dico_non_pont[atome] = dico_distance[atome]
-        return dico_pontdi, dico_non_pont
+        return Annonce, dico_pontdi, dico_non_pont
     
     else:
+        Annonce = "La vérification de la sécrétion de la protéine a échoué. \nLes pontdisulfures prédis sont donc hypothétiques."
+
         dico_distance = calcul_distance(PDB, atom)
 
         if dico_distance == {}:
@@ -178,6 +181,6 @@ def pontdisulfure(PDB, atom):
                 dico_pontdi[atome] = dico_distance[atome]
             else:
                 dico_non_pont[atome] = dico_distance[atome]
-        return dico_pontdi, dico_non_pont
+        return Annonce, dico_pontdi, dico_non_pont
 
         #return "Etes vous sûr que la protéine est sécrétée avant de calculer la présence de pontdisulfures ?"

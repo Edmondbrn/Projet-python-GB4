@@ -46,8 +46,8 @@ def classification(AA, classification, PDB):
 
 
 
-def fichier_pdb(PDB, Classification):
-    fh = open("newfichier.pdb",'w')
+def fichier_pdb(PDB, Classification, code_pdb):
+    fh = open("nouveau_fichier{}.pdb".format(code_pdb),'w')
     PDB2 = PDB.split("\n")
     for line in PDB2:
         if line[0:4] == "ATOM":
@@ -65,8 +65,8 @@ def mise_en_page(titre):
     texte_separation = "="*200 +"\n" + " "*90 + titre + "\n" + "="*200 + "\n"*2
     return texte_separation
 
-def fichier_bilan(PDB):
-    fh = open("Fichier bilan.txt","w", encoding= "utf-8")
+def fichier_bilan(PDB, nom_fiche):
+    fh = open("Fichier bilan {}.txt".format(nom_fiche),"w", encoding= "utf-8")
     fh.write(mise_en_page("Séquence FASTA"))
     fh.write(fusion(PDB) + "\n"*2)
 
@@ -77,7 +77,7 @@ def fichier_bilan(PDB):
     fh.write(str(tableau_bilan_AA(PDB))+ "\n"*2)
 
     fh.write(mise_en_page("Pontdisulfures"))
-    dico_ptdi, dico_non_ptdi = pontdisulfure(PDB, "SG")
+    _, dico_ptdi, dico_non_ptdi = pontdisulfure(PDB, "SG")
     for element in dico_ptdi.keys():
         fh.write("Le cystéines suivantes sont liées: " + element + " à une distance de: " + str(round(dico_ptdi[element], 2)) + "A\n")
     for element in dico_non_ptdi.keys():

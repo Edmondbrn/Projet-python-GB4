@@ -14,7 +14,8 @@ from Info_imp import info_imp, fusion
 from Composition_AA import graphique_aa, tableau_bilan_AA
 # from Profil_hydrophobicite import
 from coordonnees_atome import pontdisulfure
-from Matrice_contact import graph_matrice
+from Matrice_contact import graph_matrice, fichier_matrice, matrice_contact
+from Creation_fichiers import fichier_pdb, fichier_bilan
 
 
 ###############################################################
@@ -75,9 +76,11 @@ class Application:
         self._creerPage1()
         self._creerPage2()
         self._creerPage3()
+        self._creerPage3_bis()
         self._creerPage4()
         self._creerPage5()
         self._creerPage6()
+        self._creerPage7()
 
 
         
@@ -248,8 +251,44 @@ class Application:
                                                        tailleBouton), # (x, y) et (largeur, hauteur)
                                 text="Fiche PDB",
                                 manager=self.managerPage3)
+        
+        self.bouton_nouvelle_fiche = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 8 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] *8/10  + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Recharger PDB",
+                                manager=self.managerPage3)
+
         taillePolice = 40
         txt.dessinerTexte(self.page3, "Fiche PDB", (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=taillePolice)
+
+    def _creerPage3_bis(self):
+        """
+        Méthode pour créer la page du menu
+        """
+        self.page3_bis = pg.Surface(TAILLE_FENETRE)
+        # Couleur du fond, marche en RGB aussi (0,0,0)
+        self.page3_bis.fill(COULEUR_FOND)
+
+
+        # GUI manager permet de créer des boutons directement
+        self.managerPage3_bis = pgg.UIManager(TAILLE_FENETRE)
+
+        #Création des boutons de la page
+        tailleBouton = (200, 50)
+        ecartEntreBouton = 16
+        # Bouton pour la description générale de la protéine et de la fiche pdb
+        self.retour_page1 = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 2 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] * 4/10 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Retour",
+                                manager=self.managerPage3_bis)
+        
+        taillePolice = 30
+        txt.dessinerTexte(self.page3_bis, "Un problème a eu lieu lors du chargement de la fiche PDB", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=taillePolice)
+        txt.dessinerTexte(self.page3_bis, "Veuillez fermer le programme ou recharger une autre fiche", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3 + taillePolice), alignement="milieu-centre", taillePolice=taillePolice)
+
 
 
     def _creerPage4(self):
@@ -360,7 +399,7 @@ class Application:
         ecartEntreBouton = 16
 
         self.bouton_Retour = pgg.elements.UIButton(
-                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 8 - tailleBouton[0] // 2,
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 2 - tailleBouton[0] // 2,
                                                        TAILLE_FENETRE[1] * 5/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
                                                        tailleBouton), # (x, y) et (largeur, hauteur)
                                 text="Fiche PDB",
@@ -368,21 +407,21 @@ class Application:
 
         self.bouton_Frequence = pgg.elements.UIButton(
                                 relative_rect=pg.Rect((TAILLE_FENETRE[0] // 3.2 - tailleBouton[0] // 2,
-                                                       TAILLE_FENETRE[1] * 5/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       TAILLE_FENETRE[1] * 3/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
                                                        tailleBouton), # (x, y) et (largeur, hauteur)
                                 text="Selon les fréquences",
                                 manager=self.managerPage6)
         
         self.bouton_poids = pgg.elements.UIButton(
                                 relative_rect=pg.Rect((TAILLE_FENETRE[0] // 2 - tailleBouton[0] // 2,
-                                                       TAILLE_FENETRE[1] * 5/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       TAILLE_FENETRE[1] * 3/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
                                                        tailleBouton), # (x, y) et (largeur, hauteur)
                                 text="Selon la masse des AA",
                                 manager=self.managerPage6)
         
         self.bouton_polarité = pgg.elements.UIButton(
                                 relative_rect=pg.Rect((TAILLE_FENETRE[0] // 1.45 - tailleBouton[0] // 2,
-                                                       TAILLE_FENETRE[1] * 5/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       TAILLE_FENETRE[1] * 3/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
                                                        tailleBouton), # (x, y) et (largeur, hauteur)
                                 text="Selon la polarité",
                                 manager=self.managerPage6)
@@ -393,8 +432,54 @@ class Application:
         txt.dessinerTexte(self.page6, "Veuillez choisir votre option" , (TAILLE_FENETRE[0]* 6/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
 
 
+    def _creerPage7(self):
+        """
+        Méthode pour créer la page pour que l'utilisateur choisisse le type de fichier pour recevoir la matrice de contact
+        """
+        self.page7 = pg.Surface(TAILLE_FENETRE)
+        # Couleur du fond, marche en RGB aussi (0,0,0)
+        self.page7.fill(COULEUR_FOND)
 
-   
+        # GUI manager permet de créer des boutons directement
+        self.managerPage7 = pgg.UIManager(TAILLE_FENETRE)
+
+        tailleBouton = (200, 50)
+        ecartEntreBouton = 16
+
+        self.bouton_Retour_matrice = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] // 2 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] * 5/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Fiche PDB",
+                                manager=self.managerPage7)
+
+        self.bouton_RDS = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] * 1/5 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] * 3/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Fichier .rds",
+                                manager=self.managerPage7)
+        
+        self.bouton_xlsx = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] * 2/5 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] * 3/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Fichier .xlsx",
+                                manager=self.managerPage7)
+        
+        self.bouton_csv = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] * 3/5 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] * 3/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Fichier .csv",
+                                manager=self.managerPage7)
+        
+        self.bouton_graph_matrice = pgg.elements.UIButton(
+                                relative_rect=pg.Rect((TAILLE_FENETRE[0] * 4/5 - tailleBouton[0] // 2,
+                                                       TAILLE_FENETRE[1] * 3/12 + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
+                                                       tailleBouton), # (x, y) et (largeur, hauteur)
+                                text="Graphique",
+                                manager=self.managerPage7)
 
     def _calculer(self):
         """
@@ -423,6 +508,9 @@ class Application:
             elif self.page == 3:
                 self.managerPage3.process_events(event)
 
+            elif self.page == "3_bis":
+                self.managerPage3_bis.process_events(event)
+
             elif self.page == 4:
                 self.managerPage4.process_events(event)
 
@@ -431,6 +519,9 @@ class Application:
             
             elif self.page == 6:
                 self.managerPage6.process_events(event)
+
+            elif self.page == 7:
+                self.managerPage7.process_events(event)
 
         # On récupère l'état du clavier
         self.etatClavier = pg.key.get_pressed()
@@ -449,6 +540,8 @@ class Application:
         if self.page == 3:
             self.managerPage3.update(self.deltaTime)
             self.affichageFichier.tick(self.positionSouris, self.etatSouris, self.scrollSourie)
+        if self.page == "3_bis":
+            self.managerPage3_bis.update(self.delatTime)
         if self.page == 4:
             self.managerPage4.update(self.deltaTime)
         if self.page == 5:
@@ -456,6 +549,9 @@ class Application:
             self.affichageFichier.tick(self.positionSouris, self.etatSouris, self.scrollSourie)
         if self.page == 6:
             self.managerPage6.update(self.deltaTime)
+        if self.page == 7:
+            self.managerPage7.update(self.deltaTime)
+        
         
 
     def _gererAppuiBouton(self, event):
@@ -463,28 +559,41 @@ class Application:
             self.page = 2
 
         elif event.ui_element == self.boutonVersPage3:
-            self.page = 3
+            
             self.fiche_pdb = importation_locale(self.entreeTexte.text)
-
-            self.affichageFichier.changeTexte(self.fiche_pdb)
+            if len(self.fiche_pdb.split("\n")) > 5:
+                self.page = 3
+                self.affichageFichier.changeTexte(self.fiche_pdb)
+            else:
+                self.page = "3_bis"
+            
+        elif event.ui_element == self.retour_page1:
+            self.page = 1
 
         elif event.ui_element == self.bouton_enregistrement_fichier_Oui:
-            self.page = 3
             self.fiche_pdb = importation_online(self.entreeTexte.text)
 
+            if len(self.fiche_pdb.split("\n")) > 5:
+                self.page = 3
+                self.affichageFichier.changeTexte(self.fiche_pdb)
+                fh = open(self.entreeTexte.text+".pdb", "w")
+                fh.write(self.fiche_pdb)
+                fh.close()
+            else:
+                self.page = "3_bis"
 
-            self.affichageFichier.changeTexte(self.fiche_pdb)
-
-            fh = open(self.entreeTexte.text+".pdb", "w")
-            fh.write(self.fiche_pdb)
-            fh.close()
         
         elif event.ui_element == self.bouton_enregistrement_fichier_Non:
-            self.page = 3
+            
             self.fiche_pdb = importation_online(self.entreeTexte.text)
-
-            self.affichageFichier.changeTexte(self.fiche_pdb)
-
+            if len(self.fiche_pdb.split("\n")) > 5:
+                self.page = 3
+                self.affichageFichier.changeTexte(self.fiche_pdb)
+            else:
+                self.page = "3_bis"
+            
+        elif event.ui_element == self.bouton_nouvelle_fiche :
+            self.page = 1
 
         elif event.ui_element == self.bouton_analyse_generale:
             self.description = info_imp(self.fiche_pdb)
@@ -552,30 +661,89 @@ class Application:
             self.page = 3
 
         elif event.ui_element == self.bouton_matrice_de_contact:
+
+            self.page = 7 
+            self.Titre_fenêtre = "Choisissez le type de fichier"
+            txt.dessinerTexte(self.page7, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
+
+        elif event.ui_element == self.bouton_graph_matrice:
+            self.page = 3
             graph_matrice(self.fiche_pdb)
-            self.matrice = "La matrice a bien été sauvegardée"
-            #self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.matrice))
-            self.affichageFichier.changeTexte(str(self.matrice))
+            # self.matrice = "La matrice a bien été sauvegardée"
+            # self.affichageFichier.changeTexte(str(self.matrice))
+
+        elif event.ui_element == self.bouton_xlsx:
+            self.page = 3
+            self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "xlsx", self.entreeTexte.text)
+            self.affichageFichier.changeTexte(self.texte_confirmation)
+
+        elif event.ui_element == self.bouton_csv:
+            self.page = 3
+            self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "csv", self.entreeTexte.text)
+            self.affichageFichier.changeTexte(self.texte_confirmation)
+
+        elif event.ui_element == self.bouton_RDS:
+            self.page = 3
+            self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "rds", self.entreeTexte.text)
+            self.affichageFichier.changeTexte(self.texte_confirmation)
+            
+        
+        elif event.ui_element == self.bouton_analyse_bilan:
+            fichier_bilan(self.fiche_pdb, self.entreeTexte.text)
+            self.texte = "Le fichier bilan de {} a bien été créé.".format(self.entreeTexte.text)
+            self.affichageFichier.changeTexte(self.texte)
+        
 
         elif event.ui_element == self.bouton_Pontdisulfure:
             self.dico = pontdisulfure(self.fiche_pdb, "SG")
             if type(self.dico) == str :
-                # self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.dico))
                  self.affichageFichier.changeTexte(self.dico)
             else:
                 self.texte = ""
                 self.k = 0
                 for element in self.dico:
                     if self.k == 0:
+                        self.texte = element + "\n"*2
+                        self.k += 1
+                        continue
+
+                    elif self.k == 1:
                         self.en_tete = "Il y a un pontdisulfure entre les "
+                        
                     else:
                         self.en_tete = "Les cystéines suivantes sont libres  "
                     for donnee in element.keys():
-                        self.texte += self.en_tete + donnee + " ("+str(round(element[donnee], 2))+" A)" + "\n"
+                        self.texte += self.en_tete + donnee + " ("+ str(round(element[donnee], 2))+" A)" + "\n"
                     self.k += 1
-                #self.affichageFichier.set_text('<font face=arial size=4 color=#FFFFFF>{}</font><br>'.format(self.texte))
                 self.affichageFichier.changeTexte(self.texte)
-            
+
+        
+        elif event.ui_element == self.bouton_polarité:
+            self.page = 3
+            self.modif = "polarite"
+            self.nom_fichier = self.entreeTexte.text + self.modif
+            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier)
+            self.texte = "Le nouveau fichier pdb a bien été créé"
+            self.affichageFichier.changeTexte(self.texte)
+
+        elif event.ui_element == self.bouton_poids:
+            self.page = 3
+            self.modif = "poids"
+            self.nom_fichier = self.entreeTexte.text + self.modif
+            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier)
+            self.texte = "Le nouveau fichier pdb a bien été créé."
+            self.affichageFichier.changeTexte(self.texte)
+        
+        elif event.ui_element == self.bouton_Frequence:
+            self.page = 3
+            self.modif = "frequence"
+            self.nom_fichier = self.entreeTexte.text + self.modif
+            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier)
+            self.texte = "Le nouveau fichier pdb a bien été créé"
+            self.affichageFichier.changeTexte(self.texte)
+
+
+
     
     def _dessiner(self):
         """
@@ -595,6 +763,10 @@ class Application:
             self.managerPage3.draw_ui(self.fenetre)
             self.affichageFichier.draw(self.fenetre)
 
+        elif self.page == "3_bis":
+            self.fenetre.blit(self.page3_bis, (0, 0))
+            self.managerPage3_bis.draw_ui(self.fenetre)
+
         elif self.page == 4:
             self.fenetre.blit(self.page4, (0, 0))
             self.managerPage4.draw_ui(self.fenetre)
@@ -607,6 +779,10 @@ class Application:
         elif self.page == 6:
             self.fenetre.blit(self.page6, (0, 0))
             self.managerPage6.draw_ui(self.fenetre)
+        
+        elif self.page == 7:
+            self.fenetre.blit(self.page7, (0, 0))
+            self.managerPage7.draw_ui(self.fenetre)
 
         # On actualise l'affichage de la fenêtre
         pg.display.update()

@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sb
 import pandas as pd
+from pyreadr import write_rds
 
 from coordonnees_atome import calcul_distance, coordonnees
 
@@ -58,7 +59,7 @@ def graph_matrice(PDB):
     mat = mat.astype(float)
 
     # Initiation du graphique matplotlib
-    f, ax = plt.subplots(figsize=(20, 16))
+    f, ax = plt.subplots(figsize=(10, 8))
 
     # Création du dégradé de couleur avec seaborn
     cmap = sb.color_palette("rainbow", as_cmap=True)
@@ -75,4 +76,12 @@ def graph_matrice(PDB):
 
     return plt.show()
 
+def fichier_matrice(matrice, extension, nom_fiche_pdb):
+    if extension == "xlsx":
+        matrice.to_excel('Matrice de contact de {}.xlsx'.format(nom_fiche_pdb), index=False)
+    elif extension == "csv":
+        matrice.to_csv('Matrice de contact de {}.csv'.format(nom_fiche_pdb), index=False)
+    else:
+        write_rds('Matrice de contact de {}'.format(nom_fiche_pdb), matrice)
+    return "Le fichier {} contenant la matrice de contact a bien été enregistré".format(extension)
 

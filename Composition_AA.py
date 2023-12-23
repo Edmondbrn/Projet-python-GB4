@@ -115,12 +115,5 @@ def graphique_aa(PDB):
     plt.title('Fréquences des acides aminés dans la séquence protéique')
     plt.legend()
     plt.show()
-
-    #Graphique pour les acides aminés de la séquence
-    plt.bar(df["AA"], df["Freq"], color = couleur, edgecolor = "black")
-    plt.title("Histogramme réprésentant la répartition des acides aminés dans la séquence")
-    plt.xlabel("Acides aminés")
-    plt.ylabel("Fréquence (%)")
-
-
+    
     return plt.show()
