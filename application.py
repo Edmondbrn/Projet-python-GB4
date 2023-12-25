@@ -69,6 +69,7 @@ class Application:
         self.fenetre = pg.display.set_mode(TAILLE_FENETRE)
         self.fenetre_texte = pg.display.set_mode(TAILLE_FENETRE)
 
+        
         # Défini la page d'origine comme la 1
         self.page = 1
         
@@ -101,7 +102,13 @@ class Application:
         # Création du fond
         self.page1 = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
-        self.page1.fill(COULEUR_FOND)
+        # self.page1.fill(COULEUR_FOND)
+
+        self.fond = pg.image.load(os.getcwd()+ "\\OIP.jpg")  # Remplacez "chemin_vers_votre_image.jpg" par le chemin de votre image
+
+        # Redimensionner l'image pour qu'elle corresponde à la taille de la fenêtre
+        self.fond = pg.transform.scale(self.fond, TAILLE_FENETRE)
+
 
         # GUI manager permet de créer des boutons directement
         self.managerPage1 = pgg.UIManager(TAILLE_FENETRE)
