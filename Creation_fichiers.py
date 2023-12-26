@@ -8,6 +8,7 @@
 from Composition_AA import tableau_bilan_AA
 from Info_imp import fusion, info_imp
 from coordonnees_atome import pontdisulfure
+from Profil_hydrophobicite import hydrophobicite
 
 #====================================================================================================================
 
@@ -75,6 +76,14 @@ def fichier_bilan(PDB, nom_fiche):
 
     fh.write(mise_en_page("Analyse des proportions des acides aminés"))
     fh.write(str(tableau_bilan_AA(PDB))+ "\n"*2)
+
+    fh.write(mise_en_page("Valeur de l'hydrophobicité de la protéine"))
+    valeur_hydro = hydrophobicite(PDB)
+    i=1
+    for element in valeur_hydro:
+        fh.write(str(i) + "   " +  str(round(element, 3)) + "\n")
+        i +=1
+    fh.write("\n"*2)
 
     fh.write(mise_en_page("Pontdisulfures"))
     _, dico_ptdi, dico_non_ptdi = pontdisulfure(PDB, "SG")

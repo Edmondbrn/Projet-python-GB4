@@ -22,10 +22,11 @@ try:
     import pygame as pg
     import pygame_gui as pgg
     import txt
+    import pandas as pd
     from Recuperation_fichier import importation_locale, importation_online
-    from Info_imp import info_imp, fusion
+    from Info_imp import info_imp, fusion, FASTA
     from Composition_AA import graphique_aa, tableau_bilan_AA
-    # from Profil_hydrophobicite import
+    from Profil_hydrophobicite import graphique_hydro, hydrophobicite
     from coordonnees_atome import pontdisulfure
     from Matrice_contact import graph_matrice, fichier_matrice, matrice_contact
     from Creation_fichiers import fichier_pdb, fichier_bilan
@@ -639,14 +640,20 @@ class Application:
             self.page = 3
 
         elif event.ui_element == self.bouton_sequence_hydropobicité:
-            # Change le texte dans la tchat box
-            self.texte = "Profil hydrophobicité"
-            self.affichageFichier.changeTexte(self.texte)
+            # Change le texte dans la tchat box et de la fenêtre
             self.Titre_fenêtre = "Profil d'hydrophobicité"
-
-            # Change le titre de la page
             self.page5.fill(COULEUR_FOND)
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
+
+            valeur_hydro = hydrophobicite(self.fiche_pdb)
+            self.texte = "Voici les valeurs d'hydrophobicité de la protéine\n*2"
+            for i in range(len(valeur_hydro)):
+                self.texte += str(i) + "   " + str(round(valeur_hydro[i],3)) + "\n"
+
+            self.affichageFichier.changeTexte(self.texte)
+            # Affiche le profil d'hydrophobicité
+            graphique_hydro(self.fiche_pdb)
+
 
         elif event.ui_element == self.bouton_sequence_FASTA2:
             self.texte = self.seq_FASTA
@@ -664,7 +671,9 @@ class Application:
             self.Titre_fenêtre = "Analyse composition en acide aminé"
             self.page5.fill(COULEUR_FOND)
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
-            graphique_aa(self.fiche_pdb)
+            
+           
+        
 
         elif event.ui_element == self.bouton_modif_Pymol :
             self.page = 6

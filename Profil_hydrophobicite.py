@@ -10,6 +10,7 @@ import ssl
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sb
+import pandas as pd
 
 from Info_imp import FASTA
 from Recuperation_fichier import importation_locale
@@ -22,8 +23,7 @@ from Recuperation_fichier import importation_locale
 
 #====================================================================================================================
 
-fiche_pdb = importation_locale("1CRN")
-_, seq = FASTA(fiche_pdb)
+
 
 
 def lecture_hydophobicite():
@@ -59,20 +59,39 @@ def extraction_data(tableau) :
     
 
 
-def hydrophobicite(sequence):
+def hydrophobicite(PDB):
     """Fonction qui permet de calculer les hydrophobicités moyennes d'une séquence au format FASTA
     input: sequence au format FASTA
     Output: liste contenant les hydrophobicités moyennes"""
+    _, seq = FASTA(PDB)
     liste_moyenne_hydrophobicite = []
-    
+    # Récupération du dictionnaire avec les valeurs de référence d'hydrophobicité
     dico_hydro = extraction_data(lecture_hydophobicite())
-    for i in range (0, len(sequence)-9):
-        fenetre = sequence[i:i+9]
+    for i in range (0, len(seq)-8):
+        fenetre = seq[i:i+9]
         liste_hydrophobicite = []
         for aa in fenetre:
             liste_hydrophobicite.append(float(dico_hydro[aa]))
         liste_moyenne_hydrophobicite.append(np.mean(liste_hydrophobicite))
+   
     return liste_moyenne_hydrophobicite
     
 
-    
+def graphique_hydro(PDB):
+
+    liste_hydro  = hydrophobicite(PDB)
+    # Configure le fond du graphique
+    sb.set(style="whitegrid")
+    # Fixe la taille de la fenêtre
+    plt.figure(figsize=(12, 6))
+    # Trace le graphique
+    sb.lineplot(data=liste_hydro, marker="o", color="blue", label="Hydrophobicité")
+    # Personnaliser les axes et le titre
+    plt.xlabel("Position dans la séquence")
+    plt.ylabel("Hydrophobicité")
+    plt.title("Profil d'Hydrophobicité de la Protéine")
+
+    # Afficher la légende
+    plt.legend()
+    # Afficher le graphique
+    return plt.show()
