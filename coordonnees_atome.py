@@ -46,34 +46,37 @@ def coordonnees(PDB, atom):
         ligne = PDB[i].split()
         # test si SG ou CA est dans la séquence
         if atom in ligne:
-            
             # Si l'AA est annoté sous plusieurs états différents
             if len(ligne[3]) > 3:
-                # Si AA est en plusieurs etats différents (ALEU/BLEU)
-                ligne_bis = PDB[i+1].split()
-                ligne_a_compter = 1
+                # Si on a une ligne ANISOU entre les lignes ATOM, on la passe
+                if PDB[i+1][0:4] == "ATOM": 
+                    j = 1
+                else:
+                    j = 2
+                ligne_bis = PDB[i+j].split()
+                ligne_a_compter = 1*j
                 liste_x = [float(ligne[6])]
                 liste_y = [float(ligne[7])]
                 liste_z = [float(ligne[8])]
 
-                nbr_de_ligne_bis = 1
+                nbr_de_ligne_bis = 1*j
                 # Parcourt toutes les lignes avec les potentiels variants des AA et ajoute les coordonnées
                 while atom in ligne_bis:
                     liste_x.append(float(ligne_bis[6]))
                     liste_y.append(float(ligne_bis[7]))
                     liste_z.append(float(ligne_bis[8]))
-                    ligne_a_compter += 1
+                    ligne_a_compter += j
                     ligne_bis = PDB[i+ligne_a_compter].split()
-                    nbr_de_ligne_bis += 1
-                # moyenne des coordonnées des deux états
-                x, y, z, pos = np.mean(liste_x) , np.mean(liste_y), np.mean(liste_z),  ligne[5]
-                dico_atome[atome + "MOY" + pos] = [round(x,3) , round(y,3), round(z,3)]
+                    nbr_de_ligne_bis += 1*j
+                # moyenne des coordonnées des différents états
+                x, y, z, pos = np.mean(liste_x) , np.mean(liste_y), np.mean(liste_z),  ligne[4] + ligne[5]
+                dico_atome[atome + "_MOY_"  + pos] = [x,y,z]
                 longueur_seq_resolue += 1
                 # Saute le 2e CA de l'AA dans le second état ou plus
                 i += nbr_de_ligne_bis
                 
             else:
-                x, y, z, pos= ligne[6], ligne[7], ligne[8], ligne[5]
+                x, y, z, pos= ligne[6], ligne[7], ligne[8],  ligne[5]+ "_" +ligne[4] 
                 dico_atome[atome + pos] = [x,y,z]
                 longueur_seq_resolue += 1
                 # Passe à la ligne suivante si elle commence par ATOM
@@ -184,18 +187,19 @@ def pontdisulfure(PDB, atom):
     else:
         Annonce = "La vérification de la sécrétion de la protéine a échoué. \nLes pontdisulfures prédis sont donc hypothétiques."
         # Récupération des données de distance
-        dico_distance = calcul_distance(PDB, atom)
-        # Si on n'a pas de cystéine dans la séquence
-        if dico_distance == {}:
-            return "Aucun cystéine n'est présente dans votre séquence"
-        # Création des dictionnaires pour les deux types de cystéines
-        dico_pontdi = {}
-        dico_non_pont = {}
-        # Parcourt du dictionnaire contenant les distances entre les paires de cystéines
-        for atome in dico_distance.keys():
-            # Trie les cystéines selon la distance
-            if dico_distance[atome] <= 3:
-                dico_pontdi[atome] = dico_distance[atome]
-            else:
-                dico_non_pont[atome] = dico_distance[atome]
-        return Annonce, dico_pontdi, dico_non_pont
+    dico_distance = calcul_distance(PDB, atom)
+    # Si on n'a pas de cystéine dans la séquence
+    if dico_distance == {}:
+        return "Aucun cystéine n'est présente dans votre séquence"
+    # Création des dictionnaires pour les deux types de cystéines
+    dico_pontdi = {}
+    dico_non_pont = {}
+    # Parcourt du dictionnaire contenant les distances entre les paires de cystéines
+    for atome in dico_distance.keys():
+        # Trie les cystéines selon la distance
+        if dico_distance[atome] <= 3:
+            dico_pontdi[atome] = dico_distance[atome]
+        else:
+            dico_non_pont[atome] = dico_distance[atome]
+    return Annonce, dico_pontdi, dico_non_pont
+
