@@ -1,21 +1,39 @@
 ###############################################################
 #                   Importation des librairies                #
 ###############################################################
-from globale import *
+
 import os
+# Assignation du chemin d'accès, permet d'éviter les problèmes d'adressage entre les différents systèmes
+chemin = __file__
+chemin_inv = chemin[::-1]
+for i in range(0,len(chemin_inv)):
+    #parcourt le chemin d'accès du .py à l'envers jusqu'au premier \\
+    if chemin_inv[i]=="\\":
+        #Correction de l'emplacement (enlève le nom du fichier .py à la fin du chemin d'accès)
+        a = len(chemin)-i
+        break
+#Sélection du répertoire de travail (celui du fichier .py)   
+os.chdir(chemin[:a:])
 
-from BoiteTexte.boiteTexteRapide  import boiteTexteRapide
+try:
+    from globale import *
 
-import pygame as pg
-import pygame_gui as pgg
-import txt
-from Recuperation_fichier import importation_locale, importation_online
-from Info_imp import info_imp, fusion
-from Composition_AA import graphique_aa, tableau_bilan_AA
-# from Profil_hydrophobicite import
-from coordonnees_atome import pontdisulfure
-from Matrice_contact import graph_matrice, fichier_matrice, matrice_contact
-from Creation_fichiers import fichier_pdb, fichier_bilan
+    from BoiteTexte.boiteTexteRapide  import boiteTexteRapide
+    import pygame as pg
+    import pygame_gui as pgg
+    import txt
+    from Recuperation_fichier import importation_locale, importation_online
+    from Info_imp import info_imp, fusion
+    from Composition_AA import graphique_aa, tableau_bilan_AA
+    # from Profil_hydrophobicite import
+    from coordonnees_atome import pontdisulfure
+    from Matrice_contact import graph_matrice, fichier_matrice, matrice_contact
+    from Creation_fichiers import fichier_pdb, fichier_bilan
+
+except:
+    input("Un problème a eu lieu lors du chargement des modules. Entrer pour fermer et réessayer")
+    quit()
+
 
 
 ###############################################################
@@ -102,13 +120,9 @@ class Application:
         # Création du fond
         self.page1 = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
-        # self.page1.fill(COULEUR_FOND)
+        self.page1.fill(COULEUR_FOND)
 
-        self.fond = pg.image.load(os.getcwd()+ "\\OIP.jpg")  # Remplacez "chemin_vers_votre_image.jpg" par le chemin de votre image
-
-        # Redimensionner l'image pour qu'elle corresponde à la taille de la fenêtre
-        self.fond = pg.transform.scale(self.fond, TAILLE_FENETRE)
-
+        
 
         # GUI manager permet de créer des boutons directement
         self.managerPage1 = pgg.UIManager(TAILLE_FENETRE)
@@ -263,7 +277,7 @@ class Application:
                                 relative_rect=pg.Rect((TAILLE_FENETRE[0] // 8 - tailleBouton[0] // 2,
                                                        TAILLE_FENETRE[1] *8/10  + (tailleBouton[1] // 2 + ecartEntreBouton // 2)),
                                                        tailleBouton), # (x, y) et (largeur, hauteur)
-                                text="Recharger PDB",
+                                text="Nouvelle PDB",
                                 manager=self.managerPage3)
 
         taillePolice = 40
@@ -345,15 +359,6 @@ class Application:
         # GUI manager permet de créer des boutons directement
         self.managerPage5 = pgg.UIManager(TAILLE_FENETRE)
 
-        # Affichage de la boite de texte pour contenir la séquence
-
-        #self.affichageFichierFASTA = pgg.elements.UITextBox(
-        #                        "",
-        #                        relative_rect=pg.Rect((TAILLE_FENETRE[0] // 3.5,
-        #                                               TAILLE_FENETRE[1] // 8),
-        #                                               tailleAffichageFichier), # (x, y) et (largeur, hauteur)
-        #                        manager=self.managerPage5)
-        
         #Création des boutons de la page
         tailleBouton = (200, 50)
         ecartEntreBouton = 16
@@ -388,7 +393,7 @@ class Application:
                                 manager=self.managerPage5)
 
         self.taillePolice = 40
-        txt.dessinerTexte(self.page5, "Séquence FASTA", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=20)
+        txt.dessinerTexte(self.page5, "Séquence au format FASTA", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=20)
 
        
     def _creerPage6(self):
@@ -647,7 +652,7 @@ class Application:
             self.texte = self.seq_FASTA
             self.affichageFichier.changeTexte(self.texte)
 
-            self.Titre_fenêtre = "Séquence FASTA"
+            self.Titre_fenêtre = "Séquence au format FASTA"
             self.page5.fill(COULEUR_FOND)
             
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
@@ -693,6 +698,10 @@ class Application:
             self.page = 3
             self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "rds", self.entreeTexte.text)
             self.affichageFichier.changeTexte(self.texte_confirmation)
+
+        elif event.ui_element == self.bouton_Retour_matrice:
+            self.page = 3
+        
             
         
         elif event.ui_element == self.bouton_analyse_bilan:

@@ -24,7 +24,7 @@ button_style = {
     "hovered_bg": pygame.Color('deepskyblue'),
     "disabled_bg": pygame.Color('gray'),
     "border_color": pygame.Color('black'),
-    "text_color": pygame.Color('white'),
+    "text_color": pygame.Color('black'),
     "font": pygame.font.Font(None, 36),
 }
 
@@ -37,8 +37,8 @@ button = pygame_gui.elements.UIButton(
     object_id=pygame_gui.core.ObjectID('custom_button', 'button'),
     container=None,
     starting_height=1,
-    layer_starting_height=1,
-    layer_thickness=1,
+    # layer_starting_height=1,
+    # layer_thickness=1,
     anchors={'left': 'left',
              'right': 'right',
              'top': 'top',
