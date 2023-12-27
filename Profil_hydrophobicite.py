@@ -27,7 +27,7 @@ from Recuperation_fichier import importation_locale
 
 
 def lecture_hydophobicite():
-
+    '''Lecture d'un fichier comprenant le profil d'hydrophobicité sur le site internet protscale.'''
     liste_fich = []
     try:
         context = ssl._create_unverified_context()
@@ -48,6 +48,7 @@ def lecture_hydophobicite():
 
 
 def extraction_data(tableau) :
+    '''Création d'un tableau comprenant les valeurs d'hydrophobicité pour chaque acides aminés.'''
     dico_hydrophobicite = {}
     tableau = tableau.split("\n")
     for line in tableau:
@@ -60,8 +61,8 @@ def extraction_data(tableau) :
 
 
 def hydrophobicite(PDB):
-    """Fonction qui permet de calculer les hydrophobicités moyennes d'une séquence au format FASTA
-    input: sequence au format FASTA
+    """Fonction qui permet de calculer les hydrophobicités moyennes d'une séquence au format FASTA.
+    Input: sequence au format FASTA
     Output: liste contenant les hydrophobicités moyennes"""
     _, seq = FASTA(PDB)
     liste_moyenne_hydrophobicite = []
@@ -78,7 +79,7 @@ def hydrophobicite(PDB):
     
 
 def graphique_hydro(PDB):
-
+    '''Création du graphique d'hydrophobicité en fonction de la position de la séquence et de l'hydrophobicité de chaque aa.'''
     liste_hydro  = hydrophobicite(PDB)
     # Configure le fond du graphique
     sb.set(style="whitegrid")

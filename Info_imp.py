@@ -6,6 +6,7 @@
 
 
 def header(PDB):
+    '''Fonction créant le header de la séquence en format FASTA à partir des informations de la fiche PDB.'''
     seq = ">"
     PDB = PDB.split("\n")
     for ligne in PDB:
@@ -15,7 +16,7 @@ def header(PDB):
     return seq
 
 def FASTA(PDB):
-
+    '''Extraction des acides aminés à partir de la fiche PDB afin de créer le format FASTA de la séquence.'''
     # Création d'une liste pour parcourir plus facilement en la coupant à chaque retour à la ligne
     PDB = PDB.strip()
     PDB = PDB.split("\n")
@@ -54,12 +55,15 @@ def FASTA(PDB):
     return seq_FASTA, liste_AA
 
 def fusion(PDB):
+    '''Création du format FASTA comprenant la séquence en acides aminés et le header.'''
     Header = header(PDB)
     seq,_ = FASTA(PDB)
     sequence = Header + seq
     return sequence
 
 def info_imp(PDB) :
+    '''Création du fichier comprenant toutes les informations importantes sur la séquence étudiée.
+    Informations importantes : header, séquence, taille de la séquence, identifiant uniprot, méthode expérimentale, résolution.'''
     liste_info = []
     PDB = PDB.strip()
     PDB = PDB.split("\n")
