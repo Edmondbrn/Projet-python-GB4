@@ -36,14 +36,3 @@ def dessinerTexte(surface, texte, position, couleurTexte=(255, 255, 255), taille
 	
 	return surface.blit(imageTexte, placement)
 
-
-# def Affiche_PDB(texte):
-# 	Fenetre_PDB = tk.Tk()
-# 	Fenetre_PDB.title("Fenêtre avec Texte")
-
-# 	# Zone de texte avec défilement
-# 	fenetre_texte = tk.scrolledtext.ScrolledText(Fenetre_PDB, width=40, height=10, wrap=tk.WORD)
-# 	fenetre_texte.insert(tk.END, texte)
-# 	fenetre_texte.pack(expand=True, fill='both')
-# 	pg.display.update()
-# 	Fenetre_PDB.mainloop()

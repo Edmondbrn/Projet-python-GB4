@@ -87,6 +87,7 @@ class Application:
         """
         self.fenetre = pg.display.set_mode(TAILLE_FENETRE)
         self.fenetre_texte = pg.display.set_mode(TAILLE_FENETRE)
+        self.fond = pg.image.load("Image retournée2.png")
 
         
         # Défini la page d'origine comme la 1
@@ -122,6 +123,7 @@ class Application:
         self.page1 = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
         self.page1.fill(COULEUR_FOND)
+        self.page1.blit(self.fond, (0,0))
 
         
 
@@ -133,7 +135,7 @@ class Application:
         # Création de la fenêtre pour rentrer le code PDB de la fiche
         self.entreeTexte = pgg.elements.UITextEntryLine(
                                     relative_rect=pg.Rect((TAILLE_FENETRE[0] // 2 - tailleBoutonEntreeTexte[0] // 2,
-                                                            TAILLE_FENETRE[1] // 6),
+                                                            TAILLE_FENETRE[1] // 4),
                                                         tailleBoutonEntreeTexte), # (x, y) et (largeur, hauteur)
                                     manager=self.managerPage1,
                                     placeholder_text="Nom du fichier"
@@ -142,23 +144,24 @@ class Application:
         # Création de nos boutons
         self.boutonVersPage3 = pgg.elements.UIButton(
                                 relative_rect=pg.Rect((TAILLE_FENETRE[0] // 2.5 - tailleBoutonEntreeTexte[0] // 2,
-                                                       TAILLE_FENETRE[1] // 2.5),
+                                                       TAILLE_FENETRE[1] // 2),
                                                        tailleBoutonEntreeTexte), # (x, y) et (largeur, hauteur)
                                 text="Local",
                                 manager=self.managerPage1)
         self.boutonVersPage2 = pgg.elements.UIButton(
                                 relative_rect=pg.Rect((TAILLE_FENETRE[0] // 1.7 - tailleBoutonEntreeTexte[0] // 2,
-                                                       TAILLE_FENETRE[1] // 2.5),
+                                                       TAILLE_FENETRE[1] // 2),
                                                        tailleBoutonEntreeTexte), # (x, y) et (largeur, hauteur)
                                 text="En ligne",
                                 manager=self.managerPage1)
 
         # Titre de la fenêtre créée en utilisant la fonction drawtext
         taillePolice = 30
+        # self.fond = pg.transform.scale(self.fond, TAILLE_FENETRE)
         #                 surface    texte                        position (x, y)
-        txt.dessinerTexte(self.page1, "Nom du fichier en ligne", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 6 - (tailleBoutonEntreeTexte[1] // 2)), alignement="haut-centre", taillePolice=taillePolice)
-        txt.dessinerTexte(self.page1, "Voulez-vous charger une fiche pdb", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=taillePolice)
-        txt.dessinerTexte(self.page1, "en local ou en ligne ?", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3 + taillePolice), alignement="milieu-centre", taillePolice=taillePolice)
+        txt.dessinerTexte(self.page1, "Nom du fichier en ligne", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 4 - (tailleBoutonEntreeTexte[1] // 2)), alignement="haut-centre", couleurTexte=(0,0,0),taillePolice=taillePolice)
+        txt.dessinerTexte(self.page1, "Voulez-vous charger une fiche pdb", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 2.5), alignement="milieu-centre", couleurTexte=(0,0,0), taillePolice=taillePolice)
+        txt.dessinerTexte(self.page1, "en local ou en ligne ?", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 2.5 + taillePolice), alignement="milieu-centre", couleurTexte=(0,0,0), taillePolice=taillePolice)
 
 
     def _creerPage2(self):
@@ -168,6 +171,8 @@ class Application:
         self.page2 = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
         self.page2.fill(COULEUR_FOND)
+        self.page2.blit(self.fond, (0,0))
+
 
         # GUI manager permet de créer des boutons directement
         self.managerPage2 = pgg.UIManager(TAILLE_FENETRE)
@@ -191,8 +196,8 @@ class Application:
 
         # Titre de la fenêtre créée en utilisant la fonction drawtext
         taillePolice = 30
-        txt.dessinerTexte(self.page2, "Voulez-vous uniquement afficher", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=taillePolice)
-        txt.dessinerTexte(self.page2, "ou télécharger la fiche PDB ?", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3 + taillePolice), alignement="milieu-centre", taillePolice=taillePolice)
+        txt.dessinerTexte(self.page2, "Voulez-vous uniquement afficher", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", couleurTexte=(0,0,0), taillePolice=taillePolice)
+        txt.dessinerTexte(self.page2, "ou télécharger la fiche PDB ?", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3 + taillePolice), alignement="milieu-centre", couleurTexte=(0,0,0), taillePolice=taillePolice)
 
 
     def _creerPage3(self):
@@ -201,7 +206,9 @@ class Application:
         """
         self.page3 = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
-        self.page3.fill(COULEUR_FOND)
+        self.page2.fill(COULEUR_FOND)
+        self.page3.blit(self.fond, (0,0))
+
 
         tailleAffichageFichier = (800, 600)
 
@@ -282,7 +289,7 @@ class Application:
                                 manager=self.managerPage3)
 
         taillePolice = 40
-        txt.dessinerTexte(self.page3, "Fiche PDB", (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=taillePolice)
+        txt.dessinerTexte(self.page3, "Fiche PDB", (TAILLE_FENETRE[0]* 6/10 , TAILLE_FENETRE[1] // 13), alignement="haut-centre", couleurTexte=(0,0,0), taillePolice=taillePolice)
 
     def _creerPage3_bis(self):
         """
@@ -291,6 +298,8 @@ class Application:
         self.page3_bis = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
         self.page3_bis.fill(COULEUR_FOND)
+        self.page3_bis.blit(self.fond, (0,0))
+
 
 
         # GUI manager permet de créer des boutons directement
@@ -308,8 +317,8 @@ class Application:
                                 manager=self.managerPage3_bis)
         
         taillePolice = 30
-        txt.dessinerTexte(self.page3_bis, "Un problème a eu lieu lors du chargement de la fiche PDB", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=taillePolice)
-        txt.dessinerTexte(self.page3_bis, "Veuillez fermer le programme ou recharger une autre fiche", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3 + taillePolice), alignement="milieu-centre", taillePolice=taillePolice)
+        txt.dessinerTexte(self.page3_bis, "Un problème a eu lieu lors du chargement de la fiche PDB", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", couleurTexte=(0,0,0), taillePolice=taillePolice)
+        txt.dessinerTexte(self.page3_bis, "Veuillez fermer le programme ou recharger une autre fiche", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3 + taillePolice), alignement="milieu-centre", couleurTexte=(0,0,0) ,taillePolice=taillePolice)
 
 
 
@@ -320,6 +329,8 @@ class Application:
         self.page4 = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
         self.page4.fill(COULEUR_FOND)
+        self.page4.blit(self.fond, (0,0))
+
         # GUI manager permet de créer des boutons directement
         self.managerPage4 = pgg.UIManager(TAILLE_FENETRE)
 
@@ -343,8 +354,8 @@ class Application:
 
         # Titre de la fenêtre créée en utilisant la fonction drawtext
         taillePolice = 30
-        txt.dessinerTexte(self.page4, "Voulez-vous uniquement afficher", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=taillePolice)
-        txt.dessinerTexte(self.page4, "ou télécharger la séquence au format FASTA ?", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3 + taillePolice), alignement="milieu-centre", taillePolice=taillePolice)
+        txt.dessinerTexte(self.page4, "Voulez-vous uniquement afficher", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", couleurTexte=(0,0,0), taillePolice=taillePolice)
+        txt.dessinerTexte(self.page4, "ou télécharger la séquence au format FASTA ?", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3 + taillePolice), alignement="milieu-centre", couleurTexte=(0,0,0), taillePolice=taillePolice)
 
 
     def _creerPage5(self):
@@ -354,6 +365,8 @@ class Application:
         self.page5 = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
         self.page5.fill(COULEUR_FOND)
+        self.page5.blit(self.fond, (0,0))
+
 
         #tailleAffichageFichier = (800, 600)
 
@@ -394,7 +407,7 @@ class Application:
                                 manager=self.managerPage5)
 
         self.taillePolice = 40
-        txt.dessinerTexte(self.page5, "Séquence au format FASTA", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", taillePolice=20)
+        txt.dessinerTexte(self.page5, "Séquence au format FASTA", (TAILLE_FENETRE[0] // 2, TAILLE_FENETRE[1] // 3), alignement="milieu-centre", couleurTexte=(0,0,0), taillePolice=20)
 
        
     def _creerPage6(self):
@@ -404,6 +417,8 @@ class Application:
         self.page6 = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
         self.page6.fill(COULEUR_FOND)
+        self.page6.blit(self.fond, (0,0))
+
 
         # GUI manager permet de créer des boutons directement
         self.managerPage6 = pgg.UIManager(TAILLE_FENETRE)
@@ -442,7 +457,7 @@ class Application:
 
 
 
-        txt.dessinerTexte(self.page6, "Veuillez choisir votre option" , (TAILLE_FENETRE[0]* 6/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
+        txt.dessinerTexte(self.page6, "Veuillez choisir votre option" , (TAILLE_FENETRE[0]* 6/12 , TAILLE_FENETRE[1] // 4), alignement="haut-centre", couleurTexte=(0,0,0), taillePolice=self.taillePolice)
 
 
     def _creerPage7(self):
@@ -452,6 +467,8 @@ class Application:
         self.page7 = pg.Surface(TAILLE_FENETRE)
         # Couleur du fond, marche en RGB aussi (0,0,0)
         self.page7.fill(COULEUR_FOND)
+        self.page7.blit(self.fond, (0,0))
+
 
         # GUI manager permet de créer des boutons directement
         self.managerPage7 = pgg.UIManager(TAILLE_FENETRE)
@@ -493,6 +510,10 @@ class Application:
                                                        tailleBouton), # (x, y) et (largeur, hauteur)
                                 text="Graphique",
                                 manager=self.managerPage7)
+        
+        self.Titre_fenêtre = "Choisissez le type de fichier"
+        txt.dessinerTexte(self.page7, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/12 , TAILLE_FENETRE[1] // 4), alignement="haut-centre", couleurTexte=(0,0,0), taillePolice=self.taillePolice)
+
 
     def _calculer(self):
         """
@@ -621,7 +642,7 @@ class Application:
         elif event.ui_element == self.bouton_enregistrement_fichierFASTA:
             self.page = 5
             self.Titre_fenêtre = "Séquence au format FASTA"
-            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
+            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/10 , TAILLE_FENETRE[1] // 13), alignement="haut-centre", couleurTexte=(0,0,0), taillePolice=self.taillePolice)
 
 
 
@@ -632,7 +653,7 @@ class Application:
             self.affichageFichier.changeTexte(self.texte)
 
             self.Titre_fenêtre = "Séquence au format FASTA"
-            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
+            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/10 , TAILLE_FENETRE[1] // 13), alignement="haut-centre", couleurTexte=(0,0,0), taillePolice=self.taillePolice)
 
 
         
@@ -643,7 +664,9 @@ class Application:
             # Change le texte dans la tchat box et de la fenêtre
             self.Titre_fenêtre = "Profil d'hydrophobicité"
             self.page5.fill(COULEUR_FOND)
-            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
+            self.page5.blit(self.fond, (0,0))
+
+            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/10 , TAILLE_FENETRE[1] // 13), alignement="haut-centre", couleurTexte=(0,0,0), taillePolice=self.taillePolice)
 
             valeur_hydro = hydrophobicite(self.fiche_pdb)
             self.texte = "Voici les valeurs d'hydrophobicité de la protéine\n*2"
@@ -661,16 +684,21 @@ class Application:
 
             self.Titre_fenêtre = "Séquence au format FASTA"
             self.page5.fill(COULEUR_FOND)
+            self.page5.blit(self.fond, (0,0))
+
             
-            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
+            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/10 , TAILLE_FENETRE[1] // 13), alignement="haut-centre", couleurTexte=(0,0,0), taillePolice=self.taillePolice)
 
         elif event.ui_element == self.bouton_analyse_AA :
+            graphique_aa(self.fiche_pdb)
             self.texte = str(tableau_bilan_AA(self.fiche_pdb))
             self.affichageFichier.changeTexte(self.texte)
 
             self.Titre_fenêtre = "Analyse composition en acide aminé"
             self.page5.fill(COULEUR_FOND)
-            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 7/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
+            self.page5.blit(self.fond, (0,0))
+
+            txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/10 , TAILLE_FENETRE[1] // 13), alignement="haut-centre",couleurTexte=(0,0,0),  taillePolice=self.taillePolice)
             
            
         
@@ -684,14 +712,11 @@ class Application:
         elif event.ui_element == self.bouton_matrice_de_contact:
 
             self.page = 7 
-            self.Titre_fenêtre = "Choisissez le type de fichier"
-            txt.dessinerTexte(self.page7, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/12 , TAILLE_FENETRE[1] // 20), alignement="haut-centre", taillePolice=self.taillePolice)
-
+            
         elif event.ui_element == self.bouton_graph_matrice:
             self.page = 3
             graph_matrice(self.fiche_pdb)
-            # self.matrice = "La matrice a bien été sauvegardée"
-            # self.affichageFichier.changeTexte(str(self.matrice))
+           
 
         elif event.ui_element == self.bouton_xlsx:
             self.page = 3

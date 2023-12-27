@@ -45,21 +45,65 @@ Identifiant Uniprot P01542
 19  V     6.85   4.35
 
 ========================================================================================================================================================================================================
+                                                                                          Valeur de l'hydrophobicité de la protéine
+========================================================================================================================================================================================================
+
+1   0.846
+2   0.704
+3   0.671
+4   0.433
+5   0.461
+6   0.314
+7   0.454
+8   0.426
+9   0.178
+10   0.332
+11   0.524
+12   0.529
+13   0.624
+14   0.506
+15   0.501
+16   0.4
+17   0.429
+18   0.712
+19   0.558
+20   0.507
+21   0.613
+22   0.613
+23   0.533
+24   0.776
+25   0.941
+26   0.941
+27   0.97
+28   1.016
+29   0.987
+30   0.914
+31   0.914
+32   1.086
+33   0.994
+34   0.794
+35   0.509
+36   0.416
+37   0.37
+38   0.303
+
+
+========================================================================================================================================================================================================
                                                                                           Pontdisulfures
 ========================================================================================================================================================================================================
 
-Le cystéines suivantes sont liées: C3:C40 à une distance de: 2.0A
-Le cystéines suivantes sont liées: C4:C32 à une distance de: 2.03A
-Le cystéines suivantes sont liées: C16:C26 à une distance de: 2.05A
-Le cystéines suivantes ne sont pas liées:C3:C4à une distance de: 7.57A
-Le cystéines suivantes ne sont pas liées:C3:C16à une distance de: 16.1A
-Le cystéines suivantes ne sont pas liées:C3:C26à une distance de: 14.86A
-Le cystéines suivantes ne sont pas liées:C3:C32à une distance de: 8.63A
-Le cystéines suivantes ne sont pas liées:C4:C16à une distance de: 10.32A
-Le cystéines suivantes ne sont pas liées:C4:C26à une distance de: 9.77A
-Le cystéines suivantes ne sont pas liées:C4:C40à une distance de: 8.03A
-Le cystéines suivantes ne sont pas liées:C16:C32à une distance de: 9.08A
-Le cystéines suivantes ne sont pas liées:C16:C40à une distance de: 17.08A
-Le cystéines suivantes ne sont pas liées:C26:C32à une distance de: 8.72A
-Le cystéines suivantes ne sont pas liées:C26:C40à une distance de: 15.85A
-Le cystéines suivantes ne sont pas liées:C32:C40à une distance de: 9.45A
+Le cystéines suivantes sont liées: C3_A:C40_A à une distance de: 2.0A
+Le cystéines suivantes sont liées: C4_A:C32_A à une distance de: 2.03A
+Le cystéines suivantes sont liées: C16_A:C26_A à une distance de: 2.05A
+Le cystéines suivantes ne sont pas liées: C3_A:C4_Aà une distance de: 7.57A
+Le cystéines suivantes ne sont pas liées: C3_A:C16_Aà une distance de: 16.1A
+Le cystéines suivantes ne sont pas liées: C3_A:C26_Aà une distance de: 14.86A
+Le cystéines suivantes ne sont pas liées: C3_A:C32_Aà une distance de: 8.63A
+Le cystéines suivantes ne sont pas liées: C4_A:C16_Aà une distance de: 10.32A
+Le cystéines suivantes ne sont pas liées: C4_A:C26_Aà une distance de: 9.77A
+Le cystéines suivantes ne sont pas liées: C4_A:C40_Aà une distance de: 8.03A
+Le cystéines suivantes ne sont pas liées: C16_A:C32_Aà une distance de: 9.08A
+Le cystéines suivantes ne sont pas liées: C16_A:C40_Aà une distance de: 17.08A
+Le cystéines suivantes ne sont pas liées: C26_A:C32_Aà une distance de: 8.72A
+Le cystéines suivantes ne sont pas liées: C26_A:C40_Aà une distance de: 15.85A
+Le cystéines suivantes ne sont pas liées: C32_A:C40_Aà une distance de: 9.45A
