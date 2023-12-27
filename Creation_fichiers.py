@@ -16,7 +16,8 @@ from Profil_hydrophobicite import hydrophobicite
 
 #====================================================================================================================
 def classification(AA, classification, PDB):
-
+    '''Classification des acides aminés en fonction de leur polarité, acidité, basicité, poids, fréquence d'apparition.
+    Définition dictionnaire code des acides aminés : 3L to 1L'''
     if classification == "polarite":
         polaires_non_charges = ('SER', 'THR', 'ASN', 'GLN', 'CYS')
         polaires_acides =  ('ASP', 'GLU')
@@ -48,6 +49,7 @@ def classification(AA, classification, PDB):
 
 
 def fichier_pdb(PDB, Classification, code_pdb):
+    '''Création d'un nouveau fichier qui contiendra notre classification des acides aminés par ligne et leur B-factor correspondant.'''
     fh = open("nouveau_fichier{}.pdb".format(code_pdb),'w')
     PDB2 = PDB.split("\n")
     for line in PDB2:
@@ -63,10 +65,13 @@ def fichier_pdb(PDB, Classification, code_pdb):
 
 
 def mise_en_page(titre):
+    '''Création d'une nouvelle mise en page de notre nouveau fichier PDB comprenant les B-factor des atomes.'''
     texte_separation = "="*200 +"\n" + " "*90 + titre + "\n" + "="*200 + "\n"*2
     return texte_separation
 
 def fichier_bilan(PDB, nom_fiche):
+    ''' Création d'un fichier bilan sur notre séquence d'interet comprenant toutes les informations importantes sur la séquence.
+    fiche bilan : Info importantes, seq FASTA, proportions aa, hydrophobicité protéine, présence de ponts disulfures.'''
     fh = open("Fichier bilan {}.txt".format(nom_fiche),"w", encoding= "utf-8")
     fh.write(mise_en_page("Séquence FASTA"))
     fh.write(fusion(PDB) + "\n"*2)
@@ -90,7 +95,7 @@ def fichier_bilan(PDB, nom_fiche):
     for element in dico_ptdi.keys():
         fh.write("Le cystéines suivantes sont liées: " + element + " à une distance de: " + str(round(dico_ptdi[element], 2)) + "A\n")
     for element in dico_non_ptdi.keys():
-        fh.write("Le cystéines suivantes ne sont pas liées:" + element + "à une distance de: " + str(round(dico_non_ptdi[element], 2)) + "A\n")
+        fh.write("Le cystéines suivantes ne sont pas liées: " + element + "à une distance de: " + str(round(dico_non_ptdi[element], 2)) + "A\n")
 
 
     return fh.close()

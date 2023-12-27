@@ -20,6 +20,7 @@ from Info_imp import FASTA
 #====================================================================================================================
 
 def composition_AA(PDB):
+    '''Fonction qui extrait la séquences en acides aminés de la fiche PDB et met les données dans un dictionnaire'''
     seq,_ = FASTA(PDB)
     seq = seq.replace("\n", "")
     dico = {}
@@ -42,7 +43,7 @@ def composition_AA(PDB):
     return dico_remanie
 
 def tableau_bilan_AA(PDB):
-
+    '''Fonction qui va créer le tableau regroupant les fréquences en aa de notre séquence et les fréquences de références'''
     # Importation du tableaur contenant les valeurs de références d'Uniprot
     dF = pd.read_excel("valeurs_freqAA.xlsx")
     # Création du dataframe de la fréquences des AA dans la séquence
@@ -58,6 +59,7 @@ def tableau_bilan_AA(PDB):
 
 
 def test_proportion(dataframe):
+    ''' Tests statistiques et test des proportions en acides aminés.'''
     liste_mat = []
     for i in range(len(dataframe)):
         mat = np.array([[dataframe['Freq'][i], dataframe["FreqRef"][i]],
@@ -74,7 +76,7 @@ def test_proportion(dataframe):
 
 
 def graphique_aa(PDB):
-
+    '''Création du graphique comprenant les valeurs du tableau de fréquences précédant.'''
     #Récupération du tableau
     df = tableau_bilan_AA(PDB)
     p_value = test_proportion(df)

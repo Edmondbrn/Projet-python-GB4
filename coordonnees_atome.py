@@ -30,7 +30,7 @@ def coordonnees(PDB, atom):
         # définit le nom pour le dictionnaire, C = cystéine
         atome = "C"
     else:
-        # idem mais pour les carbones alphae = CA
+        # idem mais pour les carbones alpha = CA
         atome = "CA"
     # Création d'une liste contenant les lignes de la fiche pdb
     PDB = PDB.split("\n")
@@ -124,7 +124,7 @@ def calcul_distance(PDB, atom):
 
 def recuperation_code_Uniprot(PDB):
     """Récupère le code Uniprot de la protéine de la fiche PDB
-    Input: fiche pdb au format str
+    Input: fiche PDB au format str
     Output: le code Uniprot au format str"""
     # Récupération des informations extraites plus tôt
     info_importante = info_imp(PDB)
