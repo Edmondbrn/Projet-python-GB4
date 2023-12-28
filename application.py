@@ -391,7 +391,7 @@ class Application:
         # GUI manager permet de créer des boutons directement
         self.managerPage6 = pgg.UIManager(TAILLE_FENETRE, 'theme.json')
 
-        tailleBouton = (200, 50)
+        tailleBouton = (220, 50)
         ecartEntreBouton = 16
 
         # Bouton pour revenir en arrière
