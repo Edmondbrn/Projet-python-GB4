@@ -15,34 +15,42 @@ from Profil_hydrophobicite import hydrophobicite
                                         # Création des fonctions #
 
 #====================================================================================================================
-def classification(AA, classification, PDB):
+def classification(AA, Classification, PDB): 
+    #on définit une fonction classification prenant en compt 3 arguments : un AA spécifique, un critère de classification, et le paramètre PDB 
     '''Classification des acides aminés en fonction de leur polarité, acidité, basicité, poids, fréquence d'apparition.
     Définition dictionnaire code des acides aminés : 3L to 1L'''
-    if classification == "polarite":
+    if Classification == "polarite":  
+        # Définition de groupes d'acides aminés en fonction de leur polarité
         polaires_non_charges = ('SER', 'THR', 'ASN', 'GLN', 'CYS')
         polaires_acides =  ('ASP', 'GLU')
         polaires_basiques = ('LYS', 'ARG', 'HIS')
         apolaires_non_aromatiques = ('GLY', 'ALA', 'VAL', 'LEU', 'ILE', 'PRO',"MET")
         apolaires_aromatiques = ('PHE', 'TYR', 'TRP')
+        # Création d'un dictionnaire associant chaque groupe à une valeur
         dico_polarité = {polaires_non_charges: 1, polaires_acides: 200, polaires_basiques: 400, apolaires_non_aromatiques: 600, apolaires_aromatiques : 800}
+         # Si le critère de classification est "polarite", on vérifie à quel groupe appartient l'acide aminé spécifié et renvoie la valeur associée à ce groupe dans le dictionnaire dico_polarité
         for element in dico_polarité.keys():
             if AA in element:
                 return dico_polarité[element]
     
-    elif classification == "poids":
+    elif Classification == "poids":
+        # On crée un dictionnaire associant chaque acide aminé à son poids moléculaire
         poids_moleculaires_aa = {'ALA': 89.09,'ARG': 174.20,'ASN': 132.12,'ASP': 133.10,'CYS': 121.15,
                                  'GLN': 146.15, 'GLU': 147.13, 'GLY': 75.07, 'HIS': 155.16, 'ILE': 131.18,
                                  'LEU': 131.18, 'LYS': 146.19, 'MET': 149.21, 'PHE': 165.19, 'PRO': 115.13, 
                                  'SER': 105.09,'THR': 119.12, 'TRP': 204.23, 'TYR': 181.19, 'VAL': 117.15}
+        #Si le critère de classification est "poids", la fonction renvoie le poids moléculaire de l'acide aminé spécifié multiplié par 4
         return poids_moleculaires_aa[AA]*4
 
-    elif classification == "frequence":
+    elif Classification == "frequence":
+         # On appelle une fonction externe "tableau_bilan_AA" avec le paramètre PDB
         df = tableau_bilan_AA(PDB)
+        # On crée le dictionnaire associant chaque acide aminé à sa représentation en une lettre
         code_acide_amine = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V"}
         acide_amine_1_lettre = code_acide_amine[AA]
         # Sélectionne la ligne pour l'acide aminé dans la colonne fréquence
         donnee = df.loc[df["AA"]== acide_amine_1_lettre]["Freq"]
-        # Renvoie uniquement la valeur de la fréquence
+        # Renvoie uniquement la valeur arrondie de la fréquence
         return round(donnee.iloc[0])
     
 

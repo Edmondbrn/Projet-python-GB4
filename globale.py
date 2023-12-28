@@ -15,5 +15,7 @@ TAILLE_FENETRE = (1200, 720)
 
 COULEUR_FOND = pg.Color('#000000')
 
+IMAGE_FOND =  pg.image.load("Image retournée2.png")
+
 # Nombre d'image par secondes de l'application
 IPS = 30
