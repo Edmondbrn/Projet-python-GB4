@@ -23,6 +23,12 @@ https://www.python.org/downloads/release/python-3115/
 Le dossier complet du programme peut être téléchargé depuis Github:
 https://github.com/Edmondbrn/Projet-python-GB4
 
+
+## Note
+
+Il se peut que la fonctionnalité de la matrice de contact mette du temps à répondre si la séquence protéique est importante
+Cela vaut aussi pour la fiche pymol en fonction des fréquences d'apparition des acides aminés.
+
 ## Auteurs
 
 Berne Edmond    
