@@ -59,6 +59,7 @@ def importation_locale(code):
 
 
 def header(PDB):
+    ''' Fonction pour créer le header de la séquence FASTA en ayant extrait les infos de la fiche PDB.'''
     seq = ">"
     PDB = PDB.split("\n")
     for ligne in PDB:
@@ -68,7 +69,7 @@ def header(PDB):
     return seq
 
 def FASTA(PDB):
-
+    '''Fonction pour extraire la séquence en acides aminés du fichier PDB.'''
     # Création d'une liste pour parcourir plus facilement en la coupant à chaque retour à la ligne
     PDB = PDB.strip()
     PDB = PDB.split("\n")
@@ -89,7 +90,6 @@ def FASTA(PDB):
 
     code_acide_amine = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V"}
 
-
     # Création de la liste pour accueillir la séquence à une lettre
     liste_AA_1_Lettre = []
     for AA in liste_AA:
@@ -107,12 +107,15 @@ def FASTA(PDB):
     return seq_FASTA, liste_AA
 
 def fusion(PDB):
+    ''' Création du fichier au format FASTA : comprenant le header et la séquence en acides aminés à partir de la fiche PDB.'''
     Header = header(PDB)
     seq,_ = FASTA(PDB)
     sequence = Header + seq
     return sequence
 
 def info_imp(PDB) :
+    '''Fonction qui extrait les informations importantes de la séquence dans la fiche PDB : 
+    header, taille de la séquence, identifiant uniprot, méthode expérimentale, résolution en angstroms'''
     liste_info = []
     PDB = PDB.strip()
     PDB = PDB.split("\n")
@@ -136,6 +139,7 @@ def info_imp(PDB) :
     return info
 
 def composition_AA(PDB):
+    '''Création d'un dictionnaire comprenant la séquence en acides aminés de la fiche PDB.'''
     seq,_ = FASTA(PDB)
     seq = seq.replace("\n", "")
     dico = {}
@@ -158,8 +162,8 @@ def composition_AA(PDB):
     return dico_remanie
 
 def tableau_bilan_AA(PDB):
-
-    # Importation du tableau contenant les valeurs de références d'Uniprot
+    '''Création d'un tableau comprenant les valeurs de fréquence d'apparition des aa dans notre séquence comparé aux valeurs de références.'''
+    # Importation du tableaur contenant les valeurs de références d'Uniprot
     dF = pd.read_excel("valeurs_freqAA.xlsx")
     # Création du dataframe de la fréquences des AA dans la séquence
     dictio = composition_AA(PDB)
@@ -174,6 +178,7 @@ def tableau_bilan_AA(PDB):
 
 
 def test_proportion(dataframe):
+    '''Fonction qui va créer la base de notre graphique plot pour prendre les valeurs de fréquences. '''
     liste_mat = []
     for i in range(len(dataframe)):
         mat = np.array([[dataframe['Freq'][i], dataframe["FreqRef"][i]],
@@ -190,7 +195,7 @@ def test_proportion(dataframe):
 
 
 def graphique_aa(PDB):
-
+    '''Prise des valeurs du tableau afin de pouvoir construire le graphique avec les valeurs précédentes extraites.'''
     #Récupération du tableau
     df = tableau_bilan_AA(PDB)
     p_value = test_proportion(df)
@@ -313,7 +318,7 @@ def coordonnees(PDB, atom):
 
 
 def calcul_distance(PDB, atom):
-    """Calcul la distance euclidienne entre 2 atomes donnés"""
+    """Calcul la distance euclidienne entre 2 atomes donnés."""
     dico_coord,_ = coordonnees(PDB, atom)
     dico_distance = {}
     # Nombre de tour de boucle à sauter
@@ -336,7 +341,7 @@ def calcul_distance(PDB, atom):
     return dico_distance
 
 def recuperation_code_Uniprot(PDB):
-    """Récupère le code Uniprot de la protéine de la fiche PDB"""
+    """Récupère le code Uniprot de la protéine de la fiche PDB."""
     info_importante = info_imp(PDB)
     info_importante = info_importante.strip()
     info_importante = info_importante.split("\n")
@@ -346,9 +351,9 @@ def recuperation_code_Uniprot(PDB):
 
 
 def importation_online_uniprot(PDB):
-    """ Charge le fichier txt de la fiche uniprot de la protéine"""
+    """ Charge le fichier txt de la fiche uniprot de la protéine."""
     code = recuperation_code_Uniprot(PDB)
-    """Fonction pour récupérer la fiche uniprot en ligne"""
+    """Fonction pour récupérer la fiche uniprot en ligne."""
     liste_fich = []
     try:
         context = ssl._create_unverified_context()
@@ -365,7 +370,7 @@ def importation_online_uniprot(PDB):
 
 
 def secreted(PDB):
-    """Vérifie si la protéine est sécrétée"""
+    """Vérifie si la protéine est sécrétée."""
     uniprot = importation_online_uniprot(PDB)
     info_loc=[]
     uniprot= uniprot.split("\n")
@@ -377,7 +382,7 @@ def secreted(PDB):
 
 
 def pontdisulfure(PDB, atom):
-    """Calcule la présence ou non de pontdisulfure entre les protéines"""
+    """Calcule la présence ou non de pontdisulfure entre les protéines."""
     
     if secreted(PDB):
         dico_distance = calcul_distance(PDB, atom)
@@ -414,10 +419,12 @@ def pontdisulfure(PDB, atom):
 
 
 def distance_carbone_alpha(PDB):
+    '''Calcul de la distance entre les carbones alpha de chaque acides aminés.'''
     distance_CA = calcul_distance(PDB, "CA")
     return distance_CA
 
 def matrice_contact(PDB):
+    '''Construction de la matrice de contact grâce au calcul de distance entre les différents atomes.'''
     _, longueur_mat = coordonnees(PDB, "CA")
     index = [x for x in range(1, longueur_mat+1)]
     
@@ -440,12 +447,11 @@ def matrice_contact(PDB):
   
     # pd.set_option('display.max_rows', None)
     # pd.set_option('display.max_columns', None)
-    
 
     return df
 
 def graph_matrice(PDB):
-    
+    '''Création du graphique associé à la matrice de contact des différents atomes.'''
     mat = matrice_contact(PDB)
     # Conversion du datframe en un format compréhensible pour le graphiUe
     mat = mat.astype(float)
@@ -470,7 +476,7 @@ def graph_matrice(PDB):
 
 
 def classe(AA, classification, PDB):
-
+    '''Classification des aa en fonction de différentes propriétés : polarité, acidité, basicité, poids, fréquence, ...'''
     if classification == "polarite":
         polaires_non_charges = ('SER', 'THR', 'ASN', 'GLN', 'CYS')
         polaires_acides =  ('ASP', 'GLU')
@@ -502,6 +508,7 @@ def classe(AA, classification, PDB):
 
 
 def fichier_pdb(PDB, Classification):
+    '''Création d'un nouveau fichier prenant les classifications des atomes et extraction des valeurs de B-factor de la fiche PDB.'''
     fh = open("newfichier.pdb",'w')
     PDB2 = PDB.split("\n")
     for line in PDB2:
@@ -517,10 +524,13 @@ def fichier_pdb(PDB, Classification):
 
 
 def mise_en_page(titre):
+    '''Mise en page de la présentation du texte dans la fiche résumée.'''
     texte_separation = "="*200 +"\n" + " "*90 + titre + "\n" + "="*200 + "\n"*2
     return texte_separation
 
 def fichier_bilan(PDB):
+    '''Création d'un fichier présentant les informations importantes sur la séquence étudiée.
+    Séq FASTA, informations importantes, analyse des fréquences, pont-disulfures.'''
     fh = open("Fichier bilan.txt","w", encoding= "utf-8")
     fh.write(mise_en_page("Séquence FASTA"))
     fh.write(fusion(PDB) + "\n"*2)
