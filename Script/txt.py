@@ -1,13 +1,6 @@
 import pygame as pg
-import tkinter as tk
-from tkinter import scrolledtext
-import sys
 from globale import *
-import urllib.request
-import ssl
-import sys
-import platform
-import Fonction as charge
+
 
 def dessinerTexte(surface, texte, position, couleurTexte=(255, 255, 255), taillePolice=24, policeTexte=None, alignement="haut-gauche"):
 	policeTexte = pg.font.SysFont(policeTexte, taillePolice)

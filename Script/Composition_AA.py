@@ -10,6 +10,7 @@ import numpy as np
 import seaborn as sb
 import pandas as pd
 import scipy.stats as st
+import os
 
 from Info_imp import FASTA
 
@@ -44,10 +45,12 @@ def composition_AA(PDB):
 
     return dico_remanie
 
-def tableau_bilan_AA(PDB):
+def tableau_bilan_AA(PDB, chemin, repertoire):
     '''Fonction qui va créer le tableau regroupant les fréquences en aa de notre séquence et les fréquences de références'''
     # Importation du tableaur contenant les valeurs de références d'Uniprot
+    os.chdir(chemin)
     dF = pd.read_excel("valeurs_freqAA.xlsx")
+    os.chdir(repertoire)
     # Création du dataframe de la fréquences des AA dans la séquence
     dictio = composition_AA(PDB)
     Df = pd.DataFrame(dictio)
@@ -82,10 +85,10 @@ def test_proportion(dataframe):
 
 
 
-def graphique_aa(PDB):
+def graphique_aa(PDB, repertoire, chemin):
     '''Création du graphique comprenant les valeurs du tableau de fréquences précédant.'''
     #Récupération du tableau
-    df = tableau_bilan_AA(PDB)
+    df = tableau_bilan_AA(PDB, chemin, repertoire)
     p_value = test_proportion(df)
 
     #Initiation d'un jeu de couleur pour le graphique grâce au module Seaborn

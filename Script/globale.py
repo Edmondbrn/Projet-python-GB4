@@ -2,7 +2,6 @@
 #                   Importation des librairies                #
 ###############################################################
 import pygame as pg
-import pygame_gui as pg_gui
 
 
 ###############################################################

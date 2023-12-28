@@ -9,13 +9,14 @@ from Composition_AA import tableau_bilan_AA
 from Info_imp import fusion, info_imp
 from coordonnees_atome import pontdisulfure
 from Profil_hydrophobicite import hydrophobicite
+import os
 
 #====================================================================================================================
 
                                         # Création des fonctions #
 
 #====================================================================================================================
-def classification(AA, Classification, PDB): 
+def classification(AA, Classification, PDB, chemin_py, repertoire): 
     #on définit une fonction classification prenant en compt 3 arguments : un AA spécifique, un critère de classification, et le paramètre PDB 
     '''Classification des acides aminés en fonction de leur polarité, acidité, basicité, poids, fréquence d'apparition.
     Définition dictionnaire code des acides aminés : 3L to 1L'''
@@ -44,7 +45,7 @@ def classification(AA, Classification, PDB):
 
     elif Classification == "frequence":
          # On appelle une fonction externe "tableau_bilan_AA" avec le paramètre PDB
-        df = tableau_bilan_AA(PDB)
+        df = tableau_bilan_AA(PDB, chemin_py, repertoire)
         # On crée le dictionnaire associant chaque acide aminé à sa représentation en une lettre
         code_acide_amine = {"ALA": "A", "ARG": "R", "ASN": "N", "ASP": "D", "CYS": "C", "GLN": "Q", "GLU": "E", "GLY": "G", "HIS": "H", "ILE": "I", "LEU": "L", "LYS": "K", "MET": "M", "PHE": "F", "PRO": "P", "SER": "S", "THR": "T", "TRP": "W", "TYR": "Y", "VAL": "V"}
         acide_amine_1_lettre = code_acide_amine[AA]
@@ -56,14 +57,15 @@ def classification(AA, Classification, PDB):
 
 
 
-def fichier_pdb(PDB, Classification, code_pdb):
+def fichier_pdb(PDB, Classification, code_pdb, repertoire, chemin_py):
     '''Création d'un nouveau fichier qui contiendra notre classification des acides aminés par ligne et leur B-factor correspondant.'''
+    os.chdir(repertoire)
     fh = open("nouveau_fichier{}.pdb".format(code_pdb),'w')
     PDB2 = PDB.split("\n")
     for line in PDB2:
         if line[0:4] == "ATOM":
             AA = line[17:20]
-            nv_B_Factor = classification(AA, Classification, PDB)
+            nv_B_Factor = classification(AA, Classification, PDB, chemin_py, repertoire)
             nvline = line[:61] + str(nv_B_Factor) + line[-12:-1]
             fh.write(nvline + "\n")
         else:
@@ -77,9 +79,12 @@ def mise_en_page(titre):
     texte_separation = "="*200 +"\n" + " "*90 + titre + "\n" + "="*200 + "\n"*2
     return texte_separation
 
-def fichier_bilan(PDB, nom_fiche):
+def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
     ''' Création d'un fichier bilan sur notre séquence d'interet comprenant toutes les informations importantes sur la séquence.
     fiche bilan : Info importantes, seq FASTA, proportions aa, hydrophobicité protéine, présence de ponts disulfures.'''
+    tableau = tableau_bilan_AA(PDB, chemin, repertoire)
+    # Indique d'enregistrer le fichier dans le dossier propre à la fiche
+    os.chdir(repertoire)
     fh = open("Fichier bilan {}.txt".format(nom_fiche),"w", encoding= "utf-8")
     fh.write(mise_en_page("Séquence FASTA"))
     fh.write(fusion(PDB) + "\n"*2)
@@ -88,7 +93,7 @@ def fichier_bilan(PDB, nom_fiche):
     fh.write(info_imp(PDB) + "\n"*2)
 
     fh.write(mise_en_page("Analyse des proportions des acides aminés"))
-    fh.write(str(tableau_bilan_AA(PDB))+ "\n"*2)
+    fh.write(str(tableau)+ "\n"*2)
 
     fh.write(mise_en_page("Valeur de l'hydrophobicité de la protéine"))
     valeur_hydro = hydrophobicite(PDB)

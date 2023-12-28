@@ -10,6 +10,7 @@ import numpy as np
 import seaborn as sb
 import pandas as pd
 from pyreadr import write_rds
+import os
 
 from coordonnees_atome import calcul_distance, coordonnees
 
@@ -83,11 +84,12 @@ def graph_matrice(PDB):
 
     return plt.show()
 
-def fichier_matrice(matrice, extension, nom_fiche_pdb):
+def fichier_matrice(matrice, extension, nom_fiche_pdb, repertoire):
     """Fonction qui enregistre la matrice selon le format choisi par l'utilisateur
     Input: matrice de contact pandas (le format numpy devrait fonctionner également), le nom de l'extension (.xlsx, .csv, .rds)
            Et le nom de la fiche pdb en str pour nommer le fichier de sortie
     Output: Type de fichier choisi par l'utilisateur"""
+    os.chdir(repertoire)
     # Création fichier xlsx et csv avec pandas directement
     if extension == "xlsx":
         matrice.to_excel('Matrice de contact de {}.xlsx'.format(nom_fiche_pdb), index=False)

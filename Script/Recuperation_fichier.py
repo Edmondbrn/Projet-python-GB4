@@ -8,8 +8,7 @@
 # !python3
 import urllib.request
 import ssl
-import sys
-import platform
+import os
 
 
 #====================================================================================================================
@@ -48,3 +47,25 @@ def importation_locale(code):
         fh.close()
         Fichier = "".join(liste_fich)
         return Fichier
+
+
+def enregistrement_pdb(chemin, code, PDB):
+    """
+    Fonction pour enregistrer la fiche PDb dans le dossier contenant les données
+    input: chemin du fichier py, le code pdb et la fiche PDB tous au format str
+    output: Crée le fichier et retourne le chemin d'accès
+    """
+
+    chemin_ss_dossier = chemin + "\\Données\\"+code.upper()
+    # Test si le dossier existe déjà ou non
+    if not os.path.exists(chemin_ss_dossier):
+        #Crée le dossier et change le répertoire de travail
+        os.makedirs(chemin_ss_dossier)
+        os.chdir(chemin_ss_dossier)
+        # Définir le chemin du fichier texte à enregistrer
+        fh = open("{}.pdb".format(code), "w")
+        fh.write(PDB)
+        fh.close()
+    return chemin_ss_dossier
+
+

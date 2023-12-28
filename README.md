@@ -20,7 +20,7 @@ https://www.python.org/downloads/release/python-3115/
 
 ## Mise à jour
 
-Le dossier complet du prgramme peut être téléchargé depuis Github:
+Le dossier complet du programme peut être téléchargé depuis Github:
 https://github.com/Edmondbrn/Projet-python-GB4
 
 ## Auteurs

@@ -15,17 +15,18 @@ for i in range(0,len(chemin_inv)):
 #Sélection du répertoire de travail (celui du fichier .py)   
 os.chdir(chemin[:a:])
 
-try:
-    from globale import *
 
+
+try:
+    from globale import *   
     from BoiteTexte.boiteTexteRapide  import boiteTexteRapide
     import pygame as pg
     import pygame_gui as pgg
     import txt
     import pandas as pd
     
-    from Recuperation_fichier import importation_locale, importation_online
-    from Info_imp import info_imp, fusion, FASTA
+    from Recuperation_fichier import *
+    from Info_imp import info_imp, fusion
     from Composition_AA import graphique_aa, tableau_bilan_AA
     from Profil_hydrophobicite import graphique_hydro, hydrophobicite
     from coordonnees_atome import pontdisulfure
@@ -58,6 +59,9 @@ class Application:
         
         # Défini la page d'origine comme la 1
         self.page = 1
+
+        # Définit repertoire pour les téléchargements des données
+
         
         # Appel de nos méthodes pour créer nos pages
         self._creerPage1()
@@ -573,16 +577,21 @@ class Application:
 #======================= Bouton page 1 ============================================
         # Bouton pour immportation en ligne
         if event.ui_element == self.boutonVersPage2:
+            os.chdir(chemin[:a:])
+            self.repertoire = chemin[:a:] + "\\Données\\"+ self.entreeTexte.text.upper()
             self.page = 2
 
         # Bouton pour importation locale
         elif event.ui_element == self.boutonVersPage3:
+            os.chdir(chemin[:a:] + "\\Données\\{}".format(self.entreeTexte.text))
             self.fiche_pdb = importation_locale(self.entreeTexte.text)
             # Si la fonction renvoie le message d'erreur ou non
             if len(self.fiche_pdb.split("\n")) > 5:
                 # Vers le menu principal
                 self.page = 3
                 self.affichageFichier.changeTexte(self.fiche_pdb)
+                self.repertoire = chemin[:a:] + "\\Données\\"+ self.entreeTexte.text.upper()
+
             else:
                 # Vers la page d'erreur
                 self.page = "3_bis"
@@ -590,7 +599,7 @@ class Application:
  #======================= Bouton page 3_bis ============================================           
         elif event.ui_element == self.retour_page1:
             self.page = 1
-#======================= Bouton page 1 ============================================
+#======================= Bouton page 2 ============================================
         # Bouton pour télécharger la fiche en ligne 
         elif event.ui_element == self.bouton_enregistrement_fichier_Oui:
             self.fiche_pdb = importation_online(self.entreeTexte.text)
@@ -599,9 +608,7 @@ class Application:
                 self.page = 3
                 self.affichageFichier.changeTexte(self.fiche_pdb)
                 # Enregistrement du fichier
-                fh = open(self.entreeTexte.text+".pdb", "w")
-                fh.write(self.fiche_pdb)
-                fh.close()
+                self.repertoire = enregistrement_pdb(os.getcwd(), self.entreeTexte.text, self.fiche_pdb)
             else:
                 self.page = "3_bis"
 
@@ -645,7 +652,7 @@ class Application:
         # Bouton pour créer le fichier bilan en .txt
         elif event.ui_element == self.bouton_analyse_bilan:
             # création du fichier
-            fichier_bilan(self.fiche_pdb, self.entreeTexte.text)
+            fichier_bilan(self.fiche_pdb, self.entreeTexte.text, self.repertoire, chemin[:a:])
             # Affichage que le fichier a bien été créé
             self.texte = "Le fichier bilan de {} a bien été créé.".format(self.entreeTexte.text)
             self.affichageFichier.changeTexte(self.texte)
@@ -689,9 +696,11 @@ class Application:
             self.page = 5
             # Récupération de la séquence mise en forme et création du fichier fna pour la stocher
             self.seq_FASTA = str(fusion(self.fiche_pdb))
+            os.chdir(self.repertoire)
             Fh = open("Séquence au format FASTA de {}.fna".format(self.entreeTexte.text), "w")
             Fh.write(self.seq_FASTA)
             Fh.close()
+            os.chdir(chemin[:a:])
             # Afiichage dans la boite de texte
             self.affichageFichier.changeTexte(self.seq_FASTA)
             self.Titre_fenêtre = "Séquence au format FASTA"
@@ -728,11 +737,17 @@ class Application:
             # Récupération des valeurs d'hydrophobicité sous forme de liste et conversion en dataframe pour l'enregistrer en .xlsx
             valeur_hydro = hydrophobicite(self.fiche_pdb)
             df = pd.DataFrame(valeur_hydro, columns=["Hydrophobicité"])
+            os.chdir(self.repertoire)
             df.to_excel("Valeur d'hydrophobicité de {}.xlsx".format(self.entreeTexte.text), index = False)
+            os.chdir(chemin[:a:])
             
-            # Afiiche le texte
+            # Affiche le texte
             self.texte = "Voici les valeurs d'hydrophobicité de la protéine, \nelles ont été enregistrées sous forme d'un fichier .xlsx" +" \n"*2
-            self.affichageFichier.changeTexte(self.texte + str(df))
+
+            self.texte_tableau =""
+            for i in range(len(df)):
+                self.texte_tableau += str(round(df.iloc[i,0],3)) + "\n"
+            self.affichageFichier.changeTexte(self.texte + self.texte_tableau)
             # Affiche le profil d'hydrophobicité
             graphique_hydro(self.fiche_pdb)
 
@@ -749,8 +764,8 @@ class Application:
         # Bouton pour l'analyse des proportion des AA dans la séquence
         elif event.ui_element == self.bouton_analyse_AA :
             # Affiche graphique et le tableau bilan
-            graphique_aa(self.fiche_pdb)
-            self.texte = str(tableau_bilan_AA(self.fiche_pdb))
+            graphique_aa(self.fiche_pdb, self.repertoire, chemin[:a:])
+            self.texte = str(tableau_bilan_AA(self.fiche_pdb, chemin[:a:], self.repertoire))
             self.affichageFichier.changeTexte(self.texte)
 
             self.Titre_fenêtre = "Analyse composition en acide aminé"
@@ -773,7 +788,7 @@ class Application:
             # Nom du futur fichier
             self.nom_fichier = self.entreeTexte.text + self.modif
             # Enregistrement du fichier
-            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier)
+            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier, self.repertoire, chemin[:a:])
             self.texte = "Le nouveau fichier pdb a bien été créé"
             self.affichageFichier.changeTexte(self.texte)
 
@@ -782,7 +797,7 @@ class Application:
             self.page = 3
             self.modif = "poids"
             self.nom_fichier = self.entreeTexte.text + self.modif
-            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier)
+            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier, self.repertoire, chemin[:a:])
             self.texte = "Le nouveau fichier pdb a bien été créé."
             self.affichageFichier.changeTexte(self.texte)
         
@@ -791,7 +806,7 @@ class Application:
             self.page = 3
             self.modif = "frequence"
             self.nom_fichier = self.entreeTexte.text + self.modif
-            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier)
+            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier, self.repertoire, chemin[:a:])
             self.texte = "Le nouveau fichier pdb a bien été créé"
             self.affichageFichier.changeTexte(self.texte)
 
@@ -806,19 +821,19 @@ class Application:
         # Bouton pour le fichier .xlsx
         elif event.ui_element == self.bouton_xlsx:
             self.page = 3
-            self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "xlsx", self.entreeTexte.text)
+            self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "xlsx", self.entreeTexte.text, self.repertoire)
             self.affichageFichier.changeTexte(self.texte_confirmation) 
 
         # Bouton pour le fichier .csv
         elif event.ui_element == self.bouton_csv:
             self.page = 3
-            self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "csv", self.entreeTexte.text)
+            self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "csv", self.entreeTexte.text, self.repertoire)
             self.affichageFichier.changeTexte(self.texte_confirmation)
 
         # Bouton pour le fichier .rds
         elif event.ui_element == self.bouton_RDS:
             self.page = 3
-            self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "rds", self.entreeTexte.text)
+            self.texte_confirmation = fichier_matrice(matrice_contact(self.fiche_pdb), "rds", self.entreeTexte.text, self.repertoire)
             self.affichageFichier.changeTexte(self.texte_confirmation)
 
         # Bouton retour vers le menu principal
