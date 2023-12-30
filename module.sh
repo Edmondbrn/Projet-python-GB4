@@ -7,7 +7,6 @@ pip install pygame
 pip install pygame_gui
 pip install numpy
 pip install pandas
-pip install 
 pip install pyreadr
 pip install openpyxl
 pip install PyQt5
