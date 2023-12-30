@@ -7,7 +7,7 @@ import os
 chemin = __file__
 chemin_inv = chemin[::-1]
 for i in range(0,len(chemin_inv)):
-    #parcourt le chemin d'accès du .py à l'envers jusqu'au premier \\
+    #parcourt le chemin d'accès du .py à l'envers jusqu'au premier \
     if chemin_inv[i]=="\\":
         #Correction de l'emplacement (enlève le nom du fichier .py à la fin du chemin d'accès)
         a = len(chemin)-i
@@ -177,7 +177,7 @@ class Application:
         self.page3.blit(IMAGE_FOND, (0,0))
 
         # taille de la boite de texte principale
-        tailleAffichageFichier = (850, 600)
+        tailleAffichageFichier = (1300, 850)
 
         # GUI manager permet de créer des boutons directement
         self.managerPage3 = pgg.UIManager(TAILLE_FENETRE, 'theme.json')
@@ -187,10 +187,10 @@ class Application:
                                     (TAILLE_FENETRE[0] // 4, TAILLE_FENETRE[1] // 8),
                                     tailleAffichageFichier,
                                     police="monospace",
-                                    taillePolice=17,
+                                    taillePolice=22,
                                     vitesseScroll=4,
                                     couleurFond= (169, 184, 223),
-                                    couleurTexte= (64, 73, 96),
+                                    couleurTexte= (0,0,0),
                                     couleurCurseur=(97 ,105 ,128 ),
                                     couleurBordure= (72 ,79 ,96))
 
@@ -577,27 +577,35 @@ class Application:
 #======================= Bouton page 1 ============================================
         # Bouton pour immportation en ligne
         if event.ui_element == self.boutonVersPage2:
+            # Fixation du répertoire pour la télécharger ou non
             os.chdir(chemin[:a:])
             self.repertoire = chemin[:a:] + "\\Données\\"+ self.entreeTexte.text.upper()
+            # Passage à la page pour la télécharger ou l'afficher
             self.page = 2
 
         # Bouton pour importation locale
         elif event.ui_element == self.boutonVersPage3:
-            os.chdir(chemin[:a:] + "\\Données\\{}".format(self.entreeTexte.text))
-            self.fiche_pdb = importation_locale(self.entreeTexte.text)
-            # Si la fonction renvoie le message d'erreur ou non
-            if len(self.fiche_pdb.split("\n")) > 5:
-                # Vers le menu principal
-                self.page = 3
-                self.affichageFichier.changeTexte(self.fiche_pdb)
-                self.repertoire = chemin[:a:] + "\\Données\\"+ self.entreeTexte.text.upper()
-
-            else:
-                # Vers la page d'erreur
+            # Test si le dossier existe déjà ou non
+            try:
+                os.chdir(chemin[:a:] + "\\Données\\{}".format(self.entreeTexte.text.upper()))
+            # Message d'erreur si ce n'est pas le cas
+            except:
                 self.page = "3_bis"
+            # Si le dossier existe
+            else:
+            # Si la fonction renvoie le message d'erreur ou non, soit si la fiche pdb est invalide ou non
+                self.fiche_pdb = importation_locale(self.entreeTexte.text)
+                if len(self.fiche_pdb.split("\n")) > 5:
+                    # Vers le menu principal
+                    self.page = 3
+                    self.affichageFichier.changeTexte(self.fiche_pdb)
+                    self.repertoire = chemin[:a:] + "\\Données\\"+ self.entreeTexte.text.upper()
+                else:
+                    # Vers la page d'erreur
+                    self.page = "3_bis"
 
  #======================= Bouton page 3_bis ============================================           
-        elif event.ui_element == self.retour_page1:
+        elif event.ui_element == self.retour_page1: # Bouton fait retourner à la page d'accueil
             self.page = 1
 #======================= Bouton page 2 ============================================
         # Bouton pour télécharger la fiche en ligne 
@@ -607,7 +615,7 @@ class Application:
             if len(self.fiche_pdb.split("\n")) > 5:
                 self.page = 3
                 self.affichageFichier.changeTexte(self.fiche_pdb)
-                # Enregistrement du fichier
+                # Enregistrement du fichier et récupération du repertoire du dossier de la fiche
                 self.repertoire = enregistrement_pdb(os.getcwd(), self.entreeTexte.text, self.fiche_pdb)
             else:
                 self.page = "3_bis"

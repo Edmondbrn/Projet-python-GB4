@@ -63,7 +63,7 @@ def enregistrement_pdb(chemin, code, PDB):
         os.makedirs(chemin_ss_dossier)
         os.chdir(chemin_ss_dossier)
         # Définir le chemin du fichier texte à enregistrer
-        fh = open("{}.pdb".format(code), "w")
+        fh = open("{}.pdb".format(code.upper()), "w")
         fh.write(PDB)
         fh.close()
     return chemin_ss_dossier

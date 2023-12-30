@@ -7,6 +7,11 @@ pip install pygame
 pip install pygame_gui
 pip install numpy
 pip install pandas
-pip install scipy
+pip install 
+pip install pyreadr
+pip install openpyxl
+pip install PyQt5
+
+
 
 echo "L'installation des modules a bien été effectuée."

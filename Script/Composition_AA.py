@@ -11,6 +11,7 @@ import seaborn as sb
 import pandas as pd
 import scipy.stats as st
 import os
+import PyQt5
 
 from Info_imp import FASTA
 
@@ -94,6 +95,7 @@ def graphique_aa(PDB, repertoire, chemin):
     #Initiation d'un jeu de couleur pour le graphique grâce au module Seaborn
     couleur = sb.color_palette('Set1', n_colors=len(df['AA']))
     sb.set_theme(style="darkgrid")
+    plt.switch_backend('Qt5Agg') # Cela transforme le graphique en élément interagique, peut poser problème si cela n'est pas spécifié sous certaines version de python (conflit fenêtre pygame et matplotlib, les autres graphiques le sont déjà à l'origine)
 
     # Création des histogrammes
     # Figsize pour la taille de la fenetre, edgecolor pour tracer le contour des barres
@@ -130,6 +132,7 @@ def graphique_aa(PDB, repertoire, chemin):
     plt.ylabel('Fréquence')
     plt.title('Fréquences des acides aminés dans la séquence protéique')
     plt.legend()
-    plt.show()
+    plt.switch_backend('Qt5Agg')
+    
     
     return plt.show()
