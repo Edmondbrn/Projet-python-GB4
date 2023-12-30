@@ -48,7 +48,3 @@ Berne Edmond
 Collomb Maud    
 Duwez Léa       
 Fleury Anaïs
-
-
-
-![Texte alternatif](Image retournée2.png)
