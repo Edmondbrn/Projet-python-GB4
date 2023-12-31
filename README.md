@@ -3,14 +3,11 @@
 
 
 
-
-
-
 ## Etapes d'installation
 
 1. Instaler la version Python 3 (3.11 idéalement ou au-delà) en cliquant sur ce lien:
    https://www.python.org/downloads/release/python-3115/
-   /!\ Lors de l'installation cochez la case "Ajouter Python aux variable de chemin" (PATH) pour le bon focntionnement du programme
+   /!\ Lors de l'installation cochez la case "Ajouter Python aux variable de chemin" (PATH) pour le bon fonctionnement du programme
 
 2. Installer les modules complémentaires nécessaires en utilisant le fichier 
    module.bat (windows) ou module.sh (Linux et MacOS).
@@ -26,7 +23,7 @@
 
  2. Le logiciel a besoin d'une connexion internet pour fonctionner au mieux
 
- 3. Si vous voulez ouvrir une fiche en local, veuillez respecter la nomenclature de l'exmple 1CRN (Données-->1CRN)
+ 3. Si vous voulez ouvrir une fiche en local, veuillez respecter la nomenclature de l'exemple 1CRN (Données-->1CRN)
 
  4. Tous les documents téléchargées seront présents dans un dossier portant le nom de la fiche PDB dans le dossier "Données"
 
