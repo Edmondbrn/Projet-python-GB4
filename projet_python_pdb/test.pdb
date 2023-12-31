@@ -1,0 +1,144 @@
+HEADER    PLANT PROTEIN                           30-APR-81   1CRN              
+TITLE     WATER STRUCTURE OF A HYDROPHOBIC PROTEIN AT ATOMIC RESOLUTION.        
+TITLE    2 PENTAGON RINGS OF WATER MOLECULES IN CRYSTALS OF CRAMBIN             
+COMPND    MOL_ID: 1;                                                            
+COMPND   2 MOLECULE: CRAMBIN;                                                   
+COMPND   3 CHAIN: A;                                                            
+COMPND   4 ENGINEERED: YES                                                      
+SOURCE    MOL_ID: 1;                                                            
+SOURCE   2 ORGANISM_SCIENTIFIC: CRAMBE HISPANICA SUBSP. ABYSSINICA;             
+SOURCE   3 ORGANISM_TAXID: 3721;                                                
+SOURCE   4 STRAIN: SUBSP. ABYSSINICA                                            
+KEYWDS    PLANT SEED PROTEIN, PLANT PROTEIN                                     
+EXPDTA    X-RAY DIFFRACTION                                                     
+AUTHOR    W.A.HENDRICKSON,M.M.TEETER                                            
+REVDAT   8   29-NOV-17 1CRN    1       HELIX                                    
+REVDAT   7   11-JUL-12 1CRN    1       SCALE1 VERSN  HEADER                     
+REVDAT   6   24-FEB-09 1CRN    1       VERSN                                    
+REVDAT   5   16-APR-87 1CRN    1       HEADER                                   
+REVDAT   4   04-MAR-85 1CRN    1       REMARK                                   
+REVDAT   3   30-SEP-83 1CRN    1       REVDAT                                   
+REVDAT   2   03-DEC-81 1CRN    1       SHEET                                    
+REVDAT   1   28-JUL-81 1CRN    0                                                
+JRNL        AUTH   M.M.TEETER                                                   
+JRNL        TITL   WATER STRUCTURE OF A HYDROPHOBIC PROTEIN AT ATOMIC           
+JRNL        TITL 2 RESOLUTION: PENTAGON RINGS OF WATER MOLECULES IN CRYSTALS OF 
+JRNL        TITL 3 CRAMBIN.                                                     
+JRNL        REF    PROC.NATL.ACAD.SCI.USA        V.  81  6014 1984              
+JRNL        REFN                   ISSN 0027-8424                               
+JRNL        PMID   16593516                                                     
+JRNL        DOI    10.1073/PNAS.81.19.6014                                      
+REMARK   1                                                                      
+REMARK   1 REFERENCE 1                                                          
+REMARK   1  AUTH   W.A.HENDRICKSON,M.M.TEETER                                   
+REMARK   1  TITL   STRUCTURE OF THE HYDROPHOBIC PROTEIN CRAMBIN DETERMINED      
+REMARK   1  TITL 2 DIRECTLY FROM THE ANOMALOUS SCATTERING OF SULPHUR            
+REMARK   1  REF    NATURE                        V. 290   107 1981              
+REMARK   1  REFN                   ISSN 0028-0836                               
+REMARK   1 REFERENCE 2                                                          
+REMARK   1  AUTH   M.M.TEETER,W.A.HENDRICKSON                                   
+REMARK   1  TITL   HIGHLY ORDERED CRYSTALS OF THE PLANT SEED PROTEIN CRAMBIN    
+REMARK   1  REF    J.MOL.BIOL.                   V. 127   219 1979              
+REMARK   1  REFN                   ISSN 0022-2836                               
+REMARK   2                                                                      
+REMARK   2 RESOLUTION.    1.50 ANGSTROMS.                                       
+REMARK   3                                                                      
+REMARK   3 REFINEMENT.                                                          
+REMARK   3   PROGRAM     : PROLSQ                                               
+REMARK   3   AUTHORS     : KONNERT,HENDRICKSON                                  
+REMARK   3                                                                      
+REMARK   3  B VALUES.                                                           
+REMARK   3   FROM WILSON PLOT           (A**2) : NULL                           
+REMARK   3   MEAN B VALUE      (OVERALL, A**2) : NULL                           
+REMARK   3   OVERALL ANISOTROPIC B VALUE.                                       
+REMARK   3    B11 (A**2) : NULL                                                 
+REMARK   3    B22 (A**2) : NULL                                                 
+REMARK   3    B33 (A**2) : NULL                                                 
+REMARK   3    B12 (A**2) : NULL                                                 
+REMARK   3    B13 (A**2) : NULL                                                 
+REMARK   3    B23 (A**2) : NULL                                                 
+REMARK   3                                                                      
+REMARK   3  ESTIMATED COORDINATE ERROR.                                         
+REMARK   3   ESD FROM LUZZATI PLOT        (A) : NULL                            
+REMARK   3   ESD FROM SIGMAA              (A) : NULL                            
+REMARK   3   LOW RESOLUTION CUTOFF        (A) : NULL                            
+REMARK   3                                                                      
+REMARK   3  RMS DEVIATIONS FROM IDEAL VALUES.                                   
+REMARK   3   DISTANCE RESTRAINTS.                    RMS    SIGMA               
+REMARK   3    BOND LENGTH                     (A) : NULL  ; NULL                
+REMARK   3    ANGLE DISTANCE                  (A) : NULL  ; NULL                
+REMARK   3    INTRAPLANAR 1-4 DISTANCE        (A) : NULL  ; NULL                
+REMARK   3    H-BOND OR METAL COORDINATION    (A) : NULL  ; NULL                
+REMARK   3                                                                      
+REMARK   3   PLANE RESTRAINT                  (A) : NULL  ; NULL                
+REMARK   3   CHIRAL-CENTER RESTRAINT       (A**3) : NULL  ; NULL                
+REMARK   3                                                                      
+REMARK   3   NON-BONDED CONTACT RESTRAINTS.                                     
+REMARK   3    SINGLE TORSION                  (A) : NULL  ; NULL                
+REMARK   3    MULTIPLE TORSION                (A) : NULL  ; NULL                
+REMARK   3    H-BOND (X...Y)                  (A) : NULL  ; NULL                
+REMARK   3    H-BOND (X-H...Y)                (A) : NULL  ; NULL                
+REMARK   3                                                                      
+REMARK   3   CONFORMATIONAL TORSION ANGLE RESTRAINTS.                           
+REMARK   3    SPECIFIED                 (DEGREES) : NULL  ; NULL                
+REMARK   3    PLANAR                    (DEGREES) : NULL  ; NULL                
+REMARK   3    STAGGERED                 (DEGREES) : NULL  ; NULL                
+REMARK   3    TRANSVERSE                (DEGREES) : NULL  ; NULL                
+REMARK   3                                                                      
+REMARK   3  ISOTROPIC THERMAL FACTOR RESTRAINTS.    RMS    SIGMA                
+REMARK   3   MAIN-CHAIN BOND               (A**2) : NULL  ; NULL                
+REMARK   3   MAIN-CHAIN ANGLE              (A**2) : NULL  ; NULL                
+REMARK   3   SIDE-CHAIN BOND               (A**2) : NULL  ; NULL                
+REMARK   3   SIDE-CHAIN ANGLE              (A**2) : NULL  ; NULL                
+REMARK   3                                                                      
+REMARK   3  OTHER REFINEMENT REMARKS: NULL                                      
+REMARK   4                                                                      
+REMARK   4 1CRN COMPLIES WITH FORMAT V. 3.30, 13-JUL-11                         
+REMARK 100                                                                      
+REMARK 100 THIS ENTRY HAS BEEN PROCESSED BY BNL.                                
+REMARK 100 THE DEPOSITION ID IS D_1000172485.                                   
+REMARK 200                                                                      
+REMARK 200 EXPERIMENTAL DETAILS                                                 
+REMARK 200  EXPERIMENT TYPE                : X-RAY DIFFRACTION                  
+REMARK 200  DATE OF DATA COLLECTION        : NULL                               
+REMARK 200  TEMPERATURE           (KELVIN) : NULL                               
+REMARK 200  PH                             : NULL                               
+REMARK 200  NUMBER OF CRYSTALS USED        : NULL                               
+REMARK 200                                                                      
+REMARK 200  SYNCHROTRON              (Y/N) : NULL                               
+REMARK 200  RADIATION SOURCE               : NULL                               
+REMARK 200  BEAMLINE                       : NULL                               
+REMARK 200  X-RAY GENERATOR MODEL          : NULL                               
+REMARK 200  MONOCHROMATIC OR LAUE    (M/L) : NULL                               
+REMARK 200  WAVELENGTH OR RANGE        (A) : NULL                               
+REMARK 200  MONOCHROMATOR                  : NULL                               
+REMARK 200  OPTICS                         : NULL                               
+REMARK 200                                                                      
+REMARK 200  DETECTOR TYPE                  : NULL                               
+REMARK 200  DETECTOR MANUFACTURER          : NULL                               
+REMARK 200  INTENSITY-INTEGRATION SOFTWARE : NULL                               
+REMARK 200  DATA SCALING SOFTWARE          : NULL                               
+REMARK 200                                                                      
+REMARK 200  NUMBER OF UNIQUE REFLECTIONS   : NULL                               
+REMARK 200  RESOLUTION RANGE HIGH      (A) : NULL                               
+REMARK 200  RESOLUTION RANGE LOW       (A) : NULL                               
+REMARK 200  REJECTION CRITERIA  (SIGMA(I)) : NULL                               
+REMARK 200                                                                      
+REMARK 200 OVERALL.                                                             
+REMARK 200  COMPLETENESS FOR RANGE     (%) : NULL                               
+REMARK 200  DATA REDUNDANCY                : NULL                                      
+REMARK 500    TYR A  29   CB  -  CG  -  CD1 ANGL. DEV. =  -4.7 DEGREES          
+REMARK 500                                                                      
+REMARK 500 REMARK: NULL                                                         
+DBREF  1CRN A    1    46  UNP    P01542   CRAM_CRAAB       1     46             
+SEQRES   1 A   46  THR THR CYS CYS PRO SER ILE VAL ALA ARG SER ASN PHE          
+SEQRES   2 A   46  ASN VAL CYS ARG LEU PRO GLY THR PRO GLU ALA ILE CYS          
+SEQRES   3 A   46  ALA THR TYR THR GLY CYS ILE ILE ILE PRO GLY ALA THR          
+SEQRES   4 A   46  CYS PRO GLY ASP TYR ALA ASN                                  
+HELIX    1  H1 ILE A    7  PRO A   19  13/10 CONFORMATION RES 17,19       13    
+HELIX    2  H2 GLU A   23  THR A   30  1DISTORTED 3/10 AT RES 30           8    
+SHEET    1  S1 2 THR A   1  CYS A   4  0                                        
+SHEET    2  S1 2 CYS A  32  ILE A  35 -1                                        
+SSBOND   1 CYS A    3    CYS A   40                          1555   1555  2.00  
+SSBOND   2 CYS A    4    CYS A   32                          1555   1555  2.04  
+SSBOND   3 CYS A   16    CYS A   26                          1555   1555  2.05  
