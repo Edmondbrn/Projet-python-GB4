@@ -134,12 +134,14 @@ def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
             i +=1
         fh.write("\n"*2)
 
+    # on écrit la mise en page pour les ponts disulfures
     fh.write(mise_en_page("Pontdisulfures"))
+    # on appelle la fonction externe pour obtenir les distances des ponts disulfures
     dico_Distance = pontdisulfure(PDB, "SG")
-    # Si la fonction renvoie la str d'erreur
+    # on teste si la fonction renvoie la chaîne type str d'erreur
     if type(dico_Distance) == str:
         fh.write("Aucune cystéine n'est présente dans votre séquence.\nVérifier l'intégrité de votre fichier pdb au cas où.")
-    # Récupération des dictionnaires
+    # sinon on récupère des dictionnaires et on écrit les informations dans le fichier
     else:
         _, dico_ptdi, dico_non_ptdi = dico_Distance
         for element in dico_ptdi.keys():
@@ -147,5 +149,5 @@ def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
         for element in dico_non_ptdi.keys():
             fh.write("Le cystéines suivantes ne sont pas liées: " + element + "à une distance de: " + str(round(dico_non_ptdi[element], 2)) + "A\n")
 
-
+    # Fermeture du fichier
     return fh.close()
