@@ -66,23 +66,26 @@ def graph_matrice(PDB):
     Output: graphique matplotlib"""
     
     mat = matrice_contact(PDB)
-    # Conversion du datframe en un format compréhensible pour le graphique
-    mat = mat.astype(float)
-    # Initiation du graphique matplotlib
-    f, ax = plt.subplots(figsize=(10, 8))
-    # Création du dégradé de couleur avec seaborn
-    cmap = sb.color_palette("rainbow", as_cmap=True)
-    # Utilisation de la méthode contourf() de matplotlib pour dessiner le graphique
-    contour = plt.contourf(mat, cmap = cmap,levels = 7, alpha = 1)
+    if mat.empty:
+        return "La matrice de contact est vide.\nVeuillez vérifier votre fichier pdb"
+    else:
+        # Conversion du datframe en un format compréhensible pour le graphique
+        mat = mat.astype(float)
+        # Initiation du graphique matplotlib
+        f, ax = plt.subplots(figsize=(10, 8))
+        # Création du dégradé de couleur avec seaborn
+        cmap = sb.color_palette("rainbow", as_cmap=True)
+        # Utilisation de la méthode contourf() de matplotlib pour dessiner le graphique
+        contour = plt.contourf(mat, cmap = cmap,levels = 7, alpha = 1)
 
-    # Ajouter une barre de couleur pour le graphique et une légende
-    legende = plt.colorbar(contour, ax=ax, orientation="vertical", shrink=0.75)
-    legende.set_label('Distance (A)', rotation=90, labelpad=15)
-    plt.xlabel("Index des acides aminés")
-    plt.ylabel("Index des acides aminés")
-    plt.title("Heatmap de la distance des acides aminés dans l'espace")
+        # Ajouter une barre de couleur pour le graphique et une légende
+        legende = plt.colorbar(contour, ax=ax, orientation="vertical", shrink=0.75)
+        legende.set_label('Distance (A)', rotation=90, labelpad=15)
+        plt.xlabel("Index des acides aminés")
+        plt.ylabel("Index des acides aminés")
+        plt.title("Heatmap de la distance des acides aminés dans l'espace")
 
-    return plt.show()
+        return plt.show()
 
 def fichier_matrice(matrice, extension, nom_fiche_pdb, repertoire):
     """Fonction qui enregistre la matrice selon le format choisi par l'utilisateur

@@ -60,8 +60,6 @@ class Application:
         # Défini la page d'origine comme la 1
         self.page = 1
 
-        # Définit repertoire pour les téléchargements des données
-
         
         # Appel de nos méthodes pour créer nos pages
         self._creerPage1()
@@ -548,7 +546,7 @@ class Application:
         if self.etatClavier[pg.K_ESCAPE]:
             self._quit()
 
-        # Actualisation de la page selon le delataTimme définit au début
+        # Actualisation de la page selon le deltaTimme définit au début
         if self.page == 1:
             self.managerPage1.update(self.deltaTime)
         if self.page == 2:
@@ -577,7 +575,7 @@ class Application:
 #======================= Bouton page 1 ============================================
         # Bouton pour immportation en ligne
         if event.ui_element == self.boutonVersPage2:
-            # Fixation du répertoire pour la télécharger ou non
+            # Fixation du répertoire pour la télécharger ou non (reset le repertoire si l'utilisateur charge plusieurs fiches)
             os.chdir(chemin[:a:])
             self.repertoire = chemin[:a:] + "\\Données\\"+ self.entreeTexte.text.upper()
             # Passage à la page pour la télécharger ou l'afficher
@@ -585,6 +583,7 @@ class Application:
 
         # Bouton pour importation locale
         elif event.ui_element == self.boutonVersPage3:
+            
             # Test si le dossier existe déjà ou non
             try:
                 os.chdir(chemin[:a:] + "\\Données\\{}".format(self.entreeTexte.text.upper()))
@@ -594,7 +593,7 @@ class Application:
             # Si le dossier existe
             else:
             # Si la fonction renvoie le message d'erreur ou non, soit si la fiche pdb est invalide ou non
-                self.fiche_pdb = importation_locale(self.entreeTexte.text)
+                self.fiche_pdb = importation_locale(self.entreeTexte.text.upper())
                 if len(self.fiche_pdb.split("\n")) > 5:
                     # Vers le menu principal
                     self.page = 3
@@ -610,23 +609,26 @@ class Application:
 #======================= Bouton page 2 ============================================
         # Bouton pour télécharger la fiche en ligne 
         elif event.ui_element == self.bouton_enregistrement_fichier_Oui:
+            # Booléen pour savoir si on doit créer le dossier de la fiche ET l'y enregistrer ou non
+            self.enregistrement_fiche_pdb = True
             self.fiche_pdb = importation_online(self.entreeTexte.text)
             # message d'erreur ou sortie normale
             if len(self.fiche_pdb.split("\n")) > 5:
                 self.page = 3
                 self.affichageFichier.changeTexte(self.fiche_pdb)
                 # Enregistrement du fichier et récupération du repertoire du dossier de la fiche
-                self.repertoire = enregistrement_pdb(os.getcwd(), self.entreeTexte.text, self.fiche_pdb)
+                self.repertoire = enregistrement_pdb(self.repertoire, self.entreeTexte.text, self.fiche_pdb, self.enregistrement_fiche_pdb)
             else:
                 self.page = "3_bis"
 
         # Bouton pour uniquement afficher la fiche en ligne
         elif event.ui_element == self.bouton_enregistrement_fichier_Non:
-            
+            self.enregistrement_fiche_pdb = False
             self.fiche_pdb = importation_online(self.entreeTexte.text)
             if len(self.fiche_pdb.split("\n")) > 5:
                 self.page = 3
                 self.affichageFichier.changeTexte(self.fiche_pdb)
+                self.repertoire = enregistrement_pdb(self.repertoire, self.entreeTexte.text, self.fiche_pdb, self.enregistrement_fiche_pdb)
             else:
                 self.page = "3_bis"
 
@@ -744,20 +746,26 @@ class Application:
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/10 , TAILLE_FENETRE[1] // 13), alignement="haut-centre", couleurTexte=(0,0,0), taillePolice=self.taillePolice)
             # Récupération des valeurs d'hydrophobicité sous forme de liste et conversion en dataframe pour l'enregistrer en .xlsx
             valeur_hydro = hydrophobicite(self.fiche_pdb)
-            df = pd.DataFrame(valeur_hydro, columns=["Hydrophobicité"])
-            os.chdir(self.repertoire)
-            df.to_excel("Valeur d'hydrophobicité de {}.xlsx".format(self.entreeTexte.text), index = False)
-            os.chdir(chemin[:a:])
-            
-            # Affiche le texte
-            self.texte = "Voici les valeurs d'hydrophobicité de la protéine, \nelles ont été enregistrées sous forme d'un fichier .xlsx" +" \n"*2
+            # Test si la fonction ressort un message d'erreur
+            if valeur_hydro == False:
+                self.affichageFichier.changeTexte(graphique_hydro(self.fiche_pdb))
+            else:
+                df = pd.DataFrame(valeur_hydro, columns=["Hydrophobicité"])
+                # Enregistrement dans le dossier spécifique de la fiche pdb correpondante
+                os.chdir(self.repertoire)
+                df.to_excel("Valeur d'hydrophobicité de {}.xlsx".format(self.entreeTexte.text), index = False)
+                os.chdir(chemin[:a:])
+                
+                # Affiche le texte
+                self.texte = "Voici les valeurs d'hydrophobicité de la protéine, \nelles ont été enregistrées sous forme d'un fichier .xlsx" +" \n"*2
 
-            self.texte_tableau =""
-            for i in range(len(df)):
-                self.texte_tableau += str(round(df.iloc[i,0],3)) + "\n"
-            self.affichageFichier.changeTexte(self.texte + self.texte_tableau)
-            # Affiche le profil d'hydrophobicité
-            graphique_hydro(self.fiche_pdb)
+                self.texte_tableau =""
+                # boucle pour afficher les valeurs d'hydrophobicités
+                for i in range(len(df)):
+                    self.texte_tableau += str(round(df.iloc[i,0],3)) + "\n"
+                self.affichageFichier.changeTexte(self.texte + self.texte_tableau)
+                # Affiche le profil d'hydrophobicité
+                graphique_hydro(self.fiche_pdb)
 
         # Bouton pour revenir à la séquence FATSA
         elif event.ui_element == self.bouton_sequence_FASTA2:
@@ -769,19 +777,23 @@ class Application:
             self.page5.blit(IMAGE_FOND, (0,0))
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/10 , TAILLE_FENETRE[1] // 13), alignement="haut-centre", couleurTexte=(0,0,0), taillePolice=self.taillePolice)
 
-        # Bouton pour l'analyse des proportion des AA dans la séquence
+        # Bouton pour l'analyse des proportions des AA dans la séquence
         elif event.ui_element == self.bouton_analyse_AA :
             # Affiche graphique et le tableau bilan
-            graphique_aa(self.fiche_pdb, self.repertoire, chemin[:a:])
-            self.texte = str(tableau_bilan_AA(self.fiche_pdb, chemin[:a:], self.repertoire))
-            self.affichageFichier.changeTexte(self.texte)
+            self.graph_aa = graphique_aa(self.fiche_pdb, self.repertoire, chemin[:a:])
+            if type(self.graph_aa) == str:
+                self.affichageFichier.changeTexte(self.graph_aa)
+                
+            else:
+                self.texte = str(tableau_bilan_AA(self.fiche_pdb, chemin[:a:], self.repertoire))
+                self.affichageFichier.changeTexte(self.texte)
 
-            self.Titre_fenêtre = "Analyse composition en acide aminé"
-            self.page5.fill(COULEUR_FOND)
-            self.page5.blit(IMAGE_FOND, (0,0))
+                self.Titre_fenêtre = "Analyse composition en acide aminé"
+                self.page5.fill(COULEUR_FOND)
+                self.page5.blit(IMAGE_FOND, (0,0))
 
             txt.dessinerTexte(self.page5, self.Titre_fenêtre , (TAILLE_FENETRE[0]* 6/10 , TAILLE_FENETRE[1] // 13), alignement="haut-centre",couleurTexte=(0,0,0),  taillePolice=self.taillePolice)
-            
+                
         # Bouton pour revenir au menu principal
         elif event.ui_element == self.bouton_Retour :
             self.page = 3
@@ -824,7 +836,10 @@ class Application:
         # Bouton pour afficher le graphique uniquement
         elif event.ui_element == self.bouton_graph_matrice:
             self.page = 3
-            graph_matrice(self.fiche_pdb)
+            self.graph = graph_matrice(self.fiche_pdb)
+            # test si le graph n'existe pas (message d'erreur de la fonction) et affiche le message
+            if type(self.graph) == str:
+               self.affichageFichier.changeTexte(self.graph)  
            
         # Bouton pour le fichier .xlsx
         elif event.ui_element == self.bouton_xlsx:

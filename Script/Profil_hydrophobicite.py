@@ -65,22 +65,27 @@ def hydrophobicite(PDB):
     Input: sequence au format FASTA
     Output: liste contenant les hydrophobicités moyennes"""
     _, seq = FASTA(PDB)
-    liste_moyenne_hydrophobicite = []
-    # Récupération du dictionnaire avec les valeurs de référence d'hydrophobicité
-    dico_hydro = extraction_data(lecture_hydophobicite())
-    for i in range (0, len(seq)-8):
-        fenetre = seq[i:i+9]
-        liste_hydrophobicite = []
-        for aa in fenetre:
-            liste_hydrophobicite.append(float(dico_hydro[aa]))
-        liste_moyenne_hydrophobicite.append(np.mean(liste_hydrophobicite))
-   
-    return liste_moyenne_hydrophobicite
+    if not seq:
+        return False
+    else:
+        liste_moyenne_hydrophobicite = []
+        # Récupération du dictionnaire avec les valeurs de référence d'hydrophobicité
+        dico_hydro = extraction_data(lecture_hydophobicite())
+        for i in range (0, len(seq)-8):
+            fenetre = seq[i:i+9]
+            liste_hydrophobicite = []
+            for aa in fenetre:
+                liste_hydrophobicite.append(float(dico_hydro[aa]))
+            liste_moyenne_hydrophobicite.append(np.mean(liste_hydrophobicite))
+    
+        return liste_moyenne_hydrophobicite
     
 
 def graphique_hydro(PDB):
     '''Création du graphique d'hydrophobicité en fonction de la position de la séquence et de l'hydrophobicité de chaque aa.'''
     liste_hydro  = hydrophobicite(PDB)
+    if not liste_hydro:
+        return "Un problème a eu lieu avec la séquence d'acide aminé.\nVérifiez votre fichier pdb."
     # Configure le fond du graphique
     sb.set(style="whitegrid")
     # Fixe la taille de la fenêtre
@@ -95,4 +100,4 @@ def graphique_hydro(PDB):
     # Afficher la légende
     plt.legend()
     # Afficher le graphique
-    return plt.show()
+    return plt.show()  

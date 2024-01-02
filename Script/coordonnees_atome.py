@@ -11,8 +11,7 @@ from math import sqrt
 import numpy as np
 import urllib.request
 import ssl
-import sys
-import platform
+
 
 #====================================================================================================================
 
@@ -40,54 +39,55 @@ def coordonnees(PDB, atom):
     # Ce dictionnaire stockera les coordonnées et l'atoms correspondant
     dico_atome = {}
     # Parcourt de la fiche jusqu'à être dans la partie des coordonées
-    while  PDB[i][0:4] != "ATOM":
+    while  PDB[i][0:4] != "ATOM" and i+1<len(PDB):
         i+=1
-    while PDB[i][0:4] == "ATOM" or PDB[i+1][0:4] == "ATOM" :
-        ligne = PDB[i].split()
-        # test si SG ou CA est dans la séquence
-        if atom in ligne:
-            # Si l'AA est annoté sous plusieurs états différents
-            if len(ligne[3]) > 3:
-                # Si on a une ligne ANISOU entre les lignes ATOM, on la passe
-                if PDB[i+1][0:4] == "ATOM": 
-                    j = 1
-                else:
-                    j = 2
-                ligne_bis = PDB[i+j].split()
-                ligne_a_compter = 1*j
-                liste_x = [float(ligne[6])]
-                liste_y = [float(ligne[7])]
-                liste_z = [float(ligne[8])]
+    if i+1<len(PDB):
+        while PDB[i][0:4] == "ATOM" or PDB[i+1][0:4] == "ATOM" :
+            ligne = PDB[i].split()
+            # test si SG ou CA est dans la séquence
+            if atom in ligne:
+                # Si l'AA est annoté sous plusieurs états différents
+                if len(ligne[3]) > 3:
+                    # Si on a une ligne ANISOU entre les lignes ATOM, on la passe
+                    if PDB[i+1][0:4] == "ATOM": 
+                        j = 1
+                    else:
+                        j = 2
+                    ligne_bis = PDB[i+j].split()
+                    ligne_a_compter = 1*j
+                    liste_x = [float(ligne[6])]
+                    liste_y = [float(ligne[7])]
+                    liste_z = [float(ligne[8])]
 
-                nbr_de_ligne_bis = 1*j
-                # Parcourt toutes les lignes avec les potentiels variants des AA et ajoute les coordonnées
-                while atom in ligne_bis:
-                    liste_x.append(float(ligne_bis[6]))
-                    liste_y.append(float(ligne_bis[7]))
-                    liste_z.append(float(ligne_bis[8]))
-                    ligne_a_compter += j
-                    ligne_bis = PDB[i+ligne_a_compter].split()
-                    nbr_de_ligne_bis += 1*j
-                # moyenne des coordonnées des différents états
-                x, y, z, pos = np.mean(liste_x) , np.mean(liste_y), np.mean(liste_z),  ligne[4] + ligne[5]
-                dico_atome[atome + "_MOY_"  + pos] = [x,y,z]
-                longueur_seq_resolue += 1
-                # Saute le 2e CA de l'AA dans le second état ou plus
-                i += nbr_de_ligne_bis
-                
-            else:
-                x, y, z, pos= ligne[6], ligne[7], ligne[8],  ligne[5]+ "_" +ligne[4] 
-                dico_atome[atome + pos] = [x,y,z]
-                longueur_seq_resolue += 1
-                # Passe à la ligne suivante si elle commence par ATOM
-                if PDB[i+1][0:4] == "ATOM": 
-                    i += 1
-                # Si on a une ligne ANISOU entre les lignes ATOM, on la passe
+                    nbr_de_ligne_bis = 1*j
+                    # Parcourt toutes les lignes avec les potentiels variants des AA et ajoute les coordonnées
+                    while atom in ligne_bis:
+                        liste_x.append(float(ligne_bis[6]))
+                        liste_y.append(float(ligne_bis[7]))
+                        liste_z.append(float(ligne_bis[8]))
+                        ligne_a_compter += j
+                        ligne_bis = PDB[i+ligne_a_compter].split()
+                        nbr_de_ligne_bis += 1*j
+                    # moyenne des coordonnées des différents états
+                    x, y, z, pos = np.mean(liste_x) , np.mean(liste_y), np.mean(liste_z),  ligne[4] + ligne[5]
+                    dico_atome[atome + "_MOY_"  + pos] = [x,y,z]
+                    longueur_seq_resolue += 1
+                    # Saute le 2e CA de l'AA dans le second état ou plus
+                    i += nbr_de_ligne_bis
+                    
                 else:
-                    i += 2
-        # Si la ligne ne contient pas CA ou SG, on passe à celle d'après
-        else:
-            i+=1
+                    x, y, z, pos= ligne[6], ligne[7], ligne[8],  ligne[5]+ "_" +ligne[4] 
+                    dico_atome[atome + pos] = [x,y,z]
+                    longueur_seq_resolue += 1
+                    # Passe à la ligne suivante si elle commence par ATOM
+                    if PDB[i+1][0:4] == "ATOM": 
+                        i += 1
+                    # Si on a une ligne ANISOU entre les lignes ATOM, on la passe
+                    else:
+                        i += 2
+            # Si la ligne ne contient pas CA ou SG, on passe à celle d'après
+            else:
+                i+=1
     return dico_atome, longueur_seq_resolue
 
 

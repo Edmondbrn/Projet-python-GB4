@@ -10,6 +10,7 @@ from Info_imp import fusion, info_imp
 from coordonnees_atome import pontdisulfure
 from Profil_hydrophobicite import hydrophobicite
 import os
+import pandas as pd
 
 #====================================================================================================================
 
@@ -93,22 +94,35 @@ def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
     fh.write(info_imp(PDB) + "\n"*2)
 
     fh.write(mise_en_page("Analyse des proportions des acides aminés"))
-    fh.write(str(tableau)+ "\n"*2)
+    # test si la fonction renvoie le booléen négatif (erreur)
+    if not isinstance(tableau, pd.DataFrame):
+        fh.write("Un problème a eu lieu avec votre fiche pdb.\nVeuillez la recharger correctement\n\n")
+    else:
+        fh.write(str(tableau)+ "\n"*2)
 
     fh.write(mise_en_page("Valeur de l'hydrophobicité de la protéine"))
     valeur_hydro = hydrophobicite(PDB)
-    i=1
-    for element in valeur_hydro:
-        fh.write(str(i) + "   " +  str(round(element, 3)) + "\n")
-        i +=1
-    fh.write("\n"*2)
+    if not valeur_hydro:
+        fh.write("Un problème a eu lieu avec votre fiche pdb.\nVeuillez la recharger correctement\n\n")
+    else:
+        i=1
+        for element in valeur_hydro:
+            fh.write(str(i) + "   " +  str(round(element, 3)) + "\n")
+            i +=1
+        fh.write("\n"*2)
 
     fh.write(mise_en_page("Pontdisulfures"))
-    _, dico_ptdi, dico_non_ptdi = pontdisulfure(PDB, "SG")
-    for element in dico_ptdi.keys():
-        fh.write("Le cystéines suivantes sont liées: " + element + " à une distance de: " + str(round(dico_ptdi[element], 2)) + "A\n")
-    for element in dico_non_ptdi.keys():
-        fh.write("Le cystéines suivantes ne sont pas liées: " + element + "à une distance de: " + str(round(dico_non_ptdi[element], 2)) + "A\n")
+    dico_Distance = pontdisulfure(PDB, "SG")
+    # Si la fonction renvoie la str d'erreur
+    if type(dico_Distance) == str:
+        fh.write("Aucun cystéine n'est présente dans votre séquence.\nVérifier l'intégrité de votre fichier pdb au cas où.")
+    # Récupération des dictionnaires
+    else:
+        _, dico_ptdi, dico_non_ptdi = dico_Distance
+        for element in dico_ptdi.keys():
+            fh.write("Le cystéines suivantes sont liées: " + element + " à une distance de: " + str(round(dico_ptdi[element], 2)) + "A\n")
+        for element in dico_non_ptdi.keys():
+            fh.write("Le cystéines suivantes ne sont pas liées: " + element + "à une distance de: " + str(round(dico_non_ptdi[element], 2)) + "A\n")
 
 
     return fh.close()
