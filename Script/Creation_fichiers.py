@@ -81,40 +81,53 @@ def fichier_pdb(PDB, Classification, code_pdb, repertoire, chemin_py):
         else:
              # Si la ligne ne commence pas par "ATOM", on écrit la ligne telle quelle
             fh.write(line + "\n")
+     # On ferme le fichier et on renvoie l'objet fichier (c'est généralement une bonne pratique de ne pas renvoyer le fichier lui-même)
     fh.close()
     return fh
 
 
 def mise_en_page(titre):
     '''Création d'une nouvelle mise en page de notre nouveau fichier PDB comprenant les B-factor des atomes.'''
+     # Création d'un titre entouré de lignes de séparation
     texte_separation = "="*200 +"\n" + " "*90 + titre + "\n" + "="*200 + "\n"*2
+     # Renvoie la mise en page
     return texte_separation
 
 def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
     ''' Création d'un fichier bilan sur notre séquence d'interet comprenant toutes les informations importantes sur la séquence.
     fiche bilan : Info importantes, seq FASTA, proportions aa, hydrophobicité protéine, présence de ponts disulfures.'''
+    # On appelle la fonction externe pour obtenir un tableau de bilan d'acides aminés
     tableau = tableau_bilan_AA(PDB, chemin, repertoire)
     # Indique d'enregistrer le fichier dans le dossier propre à la fiche
     os.chdir(repertoire)
+     # On ouvre un nouveau fichier bilan en mode écriture avec encodage utf-8
     fh = open("Fichier bilan {}.txt".format(nom_fiche),"w", encoding= "utf-8")
+      # On écrit la mise en page pour la séquence FASTA
     fh.write(mise_en_page("Séquence FASTA"))
+      # On écrit la séquence FASTA fusionnée dans le fichier PDB
     fh.write(fusion(PDB) + "\n"*2)
-
+      # On écrit la mise en page pour les informations importantes puis on les reporte dans le fichier PDB
     fh.write(mise_en_page("Informations importantes"))
     fh.write(info_imp(PDB) + "\n"*2)
-
+     # On écrit la mise en page pour l'analyse des proportions des acides aminés
     fh.write(mise_en_page("Analyse des proportions des acides aminés"))
     # test si la fonction renvoie le booléen négatif (erreur)
     if not isinstance(tableau, pd.DataFrame):
+          # Si c'est le cas, on écrit un message d'erreur dans le fichier
         fh.write("Un problème a eu lieu avec votre fiche pdb.\nVeuillez la recharger correctement\n\n")
     else:
+        # Sinon, on écrit le tableau dans le fichier
         fh.write(str(tableau)+ "\n"*2)
-
+   # Écrit la mise en page pour la valeur de l'hydrophobicité de la protéine
     fh.write(mise_en_page("Valeur de l'hydrophobicité de la protéine"))
+    # On attribue les valeurs d'hydrophobicité en faisant appel à la fonction extérieure
     valeur_hydro = hydrophobicite(PDB)
+    # on teste si la fonction renvoie un résultat valide
     if not valeur_hydro:
+          # Si c'est le cas, on écrit un message d'erreur dans le fichier
         fh.write("Un problème a eu lieu avec votre fiche pdb.\nVeuillez la recharger correctement\n\n")
     else:
+        # Sinon, on écrit les valeurs dans le fichier avec leurs index
         i=1
         for element in valeur_hydro:
             fh.write(str(i) + "   " +  str(round(element, 3)) + "\n")
@@ -125,7 +138,7 @@ def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
     dico_Distance = pontdisulfure(PDB, "SG")
     # Si la fonction renvoie la str d'erreur
     if type(dico_Distance) == str:
-        fh.write("Aucun cystéine n'est présente dans votre séquence.\nVérifier l'intégrité de votre fichier pdb au cas où.")
+        fh.write("Aucune cystéine n'est présente dans votre séquence.\nVérifier l'intégrité de votre fichier pdb au cas où.")
     # Récupération des dictionnaires
     else:
         _, dico_ptdi, dico_non_ptdi = dico_Distance
