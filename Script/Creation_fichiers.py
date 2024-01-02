@@ -60,16 +60,26 @@ def classification(AA, Classification, PDB, chemin_py, repertoire):
 
 def fichier_pdb(PDB, Classification, code_pdb, repertoire, chemin_py):
     '''Création d'un nouveau fichier qui contiendra notre classification des acides aminés par ligne et leur B-factor correspondant.'''
+     # On change le répertoire de travail vers le répertoire spécifié
     os.chdir(repertoire)
+    # On ouvre un nouveau fichier en mode écriture
     fh = open("nouveau_fichier{}.pdb".format(code_pdb),'w')
+      # On supprime les sauts à la ligne contenus dans le fichier PDB2
     PDB2 = PDB.split("\n")
+    # On parcourt chaque ligne du fichier PDB2
     for line in PDB2:
+         # On vérifie si la ligne commence par "ATOM"
         if line[0:4] == "ATOM":
+             # alors on extrait le code à 3lettress d'acide aminé (AA) de la ligne
             AA = line[17:20]
+            # On appelle la fonction externe 'classification' pour obtenir et attribuer le nouveau B-factor
             nv_B_Factor = classification(AA, Classification, PDB, chemin_py, repertoire)
+             # On construit une nouvelle ligne avec le B-factor modifié
             nvline = line[:61] + str(nv_B_Factor) + line[-12:-1]
+             # On écrit la nouvelle ligne dans le fichier
             fh.write(nvline + "\n")
         else:
+             # Si la ligne ne commence pas par "ATOM", on écrit la ligne telle quelle
             fh.write(line + "\n")
     fh.close()
     return fh
