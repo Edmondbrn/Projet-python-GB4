@@ -12,7 +12,7 @@ os.chdir(REPERTOIRE)
 try:
     from globale import *   
     from BoiteTexte.boiteTexteRapide  import boiteTexteRapide
-    import pygazme as pg
+    import pygame as pg
     import pygame_gui as pgg
     import txt
     import pandas as pd
