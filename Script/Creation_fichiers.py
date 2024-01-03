@@ -144,6 +144,7 @@ def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
     # sinon on récupère des dictionnaires et on écrit les informations dans le fichier
     else:
         _, dico_ptdi, dico_non_ptdi = dico_Distance
+        #on distingue les cas où il y a présence de ponts disulfures ou non, pour classer les cystéines liées ou non
         for element in dico_ptdi.keys():
             fh.write("Le cystéines suivantes sont liées: " + element + " à une distance de: " + str(round(dico_ptdi[element], 2)) + "A\n")
         for element in dico_non_ptdi.keys():
