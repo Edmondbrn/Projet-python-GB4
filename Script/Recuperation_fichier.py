@@ -19,16 +19,24 @@ import os
 
 def importation_online(code):
     """Fonction pour récupérer la fiche PDB en ligne"""
+     # Initialisation d'une liste pour stocker les lignes du fichier PDB
     liste_fich = []
     try:
+        # Création d'un contexte SSL non vérifié
         context = ssl._create_unverified_context()
+         # Ouverture de l'URL en ligne pour obtenir le fichier PDB
         u=urllib.request.urlopen("https://files.rcsb.org/view/"+code.upper()+".pdb", context=context)
+        # Lecture des lignes du fichier PDB
         pdblines=u.readlines()
+        # fermeture du lien
         u.close()
     except:
+        # En cas d'erreur, retourne un message indiquant le problème
         return("Problème lors de la lecture du fichier: \n" + "https://files.rcsb.org/view/"+code.upper()+".pdb\n Veuillez fermer le programme et réessayer")
     else:
+         # Si la lecture en ligne est réussie, on convertit les lignes en une seule chaîne de caractères
         for ligne in pdblines:
+            #ajoute chaque ligne au format UTF-8 dans la liste, puis les fusionne en une seule chaîne de caractères (fichier) et la retourne.
             liste_fich.append(ligne.decode("utf8").strip() + "\n")
             fichier = "".join(liste_fich)
         return fichier
@@ -36,15 +44,21 @@ def importation_online(code):
 
 def importation_locale(code):
     """Fonction pour récupérer la fiche PDB en local"""
+     # Initialisation d'une liste pour stocker les lignes du fichier PDB
     liste_fich = []
     try:
+        # Tentative d'ouverture du fichier PDB en mode lecture
         fh = open(code +".pdb", "r")
     except:
+         # On retourne un message d'erreur si, par exemple, fichier non trouvé
         return("Le fichier correspondant au code PDB {} n'a pas été trouvé\n Veuillez fermer le programme et réessayer".format(code))
     else:
+         # Si l'ouverture du fichier est réussie, on lit chaque ligne et l'ajoute à la liste
         for ligne in fh:
             liste_fich.append(ligne)
+        #On ferme le fichier
         fh.close()
+        # On fusionne les lignes en une seule chaîne de caractères et la retourne
         Fichier = "".join(liste_fich)
         return Fichier
 
