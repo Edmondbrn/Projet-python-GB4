@@ -2,7 +2,7 @@
 #                   Importation des librairies                #
 ###############################################################
 import pygame as pg
-
+import os
 
 ###############################################################
 #               Définitions des variables globales            #

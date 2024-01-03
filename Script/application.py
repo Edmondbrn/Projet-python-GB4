@@ -3,19 +3,11 @@
 #====================================================================================================================
 
 import os
-# Assignation du chemin d'accès, permet d'éviter les problèmes d'adressage entre les différents systèmes
-chemin = __file__
-chemin_inv = chemin[::-1]
-for i in range(0,len(chemin_inv)):
-    #parcourt le chemin d'accès du .py à l'envers jusqu'au premier \
-    if chemin_inv[i]=="\\":
-        #Correction de l'emplacement (enlève le nom du fichier .py à la fin du chemin d'accès)
-        a = len(chemin)-i
-        break
-#Sélection du répertoire de travail (celui du fichier .py)   
-os.chdir(chemin[:a:])
 
-
+# Fixe le repertoire de travail, dirname récupère le nom du dossier contenant le fichier application .py (__file__)
+REPERTOIRE = os.path.dirname(__file__)
+# Sélectionner le répertoire de travail
+os.chdir(REPERTOIRE)
 
 try:
     from globale import *   
@@ -576,8 +568,8 @@ class Application:
         # Bouton pour immportation en ligne
         if event.ui_element == self.boutonVersPage2:
             # Fixation du répertoire pour la télécharger ou non (reset le repertoire si l'utilisateur charge plusieurs fiches)
-            os.chdir(chemin[:a:])
-            self.repertoire = chemin[:a:] + "\\Données\\"+ self.entreeTexte.text.upper()
+            os.chdir(REPERTOIRE)
+            self.repertoire = os.path.join(REPERTOIRE, "Données", self.entreeTexte.text.upper())
             # Passage à la page pour la télécharger ou l'afficher
             self.page = 2
 
@@ -586,7 +578,7 @@ class Application:
             
             # Test si le dossier existe déjà ou non
             try:
-                os.chdir(chemin[:a:] + "\\Données\\{}".format(self.entreeTexte.text.upper()))
+                os.chdir(REPERTOIRE + "\\Données\\{}".format(self.entreeTexte.text.upper()))
             # Message d'erreur si ce n'est pas le cas
             except:
                 self.page = "3_bis"
@@ -598,7 +590,7 @@ class Application:
                     # Vers le menu principal
                     self.page = 3
                     self.affichageFichier.changeTexte(self.fiche_pdb)
-                    self.repertoire = chemin[:a:] + "\\Données\\"+ self.entreeTexte.text.upper()
+                    self.repertoire = os.path.join(REPERTOIRE, "Données", self.entreeTexte.text.upper())
                 else:
                     # Vers la page d'erreur
                     self.page = "3_bis"
@@ -662,7 +654,7 @@ class Application:
         # Bouton pour créer le fichier bilan en .txt
         elif event.ui_element == self.bouton_analyse_bilan:
             # création du fichier
-            fichier_bilan(self.fiche_pdb, self.entreeTexte.text, self.repertoire, chemin[:a:])
+            fichier_bilan(self.fiche_pdb, self.entreeTexte.text, self.repertoire, REPERTOIRE)
             # Affichage que le fichier a bien été créé
             self.texte = "Le fichier bilan de {} a bien été créé.".format(self.entreeTexte.text)
             self.affichageFichier.changeTexte(self.texte)
@@ -710,7 +702,7 @@ class Application:
             Fh = open("Séquence au format FASTA de {}.fna".format(self.entreeTexte.text), "w")
             Fh.write(self.seq_FASTA)
             Fh.close()
-            os.chdir(chemin[:a:])
+            os.chdir(REPERTOIRE)
             # Afiichage dans la boite de texte
             self.affichageFichier.changeTexte(self.seq_FASTA)
             self.Titre_fenêtre = "Séquence au format FASTA"
@@ -754,7 +746,7 @@ class Application:
                 # Enregistrement dans le dossier spécifique de la fiche pdb correpondante
                 os.chdir(self.repertoire)
                 df.to_excel("Valeur d'hydrophobicité de {}.xlsx".format(self.entreeTexte.text), index = False)
-                os.chdir(chemin[:a:])
+                os.chdir(REPERTOIRE)
                 
                 # Affiche le texte
                 self.texte = "Voici les valeurs d'hydrophobicité de la protéine, \nelles ont été enregistrées sous forme d'un fichier .xlsx" +" \n"*2
@@ -780,12 +772,12 @@ class Application:
         # Bouton pour l'analyse des proportions des AA dans la séquence
         elif event.ui_element == self.bouton_analyse_AA :
             # Affiche graphique et le tableau bilan
-            self.graph_aa = graphique_aa(self.fiche_pdb, self.repertoire, chemin[:a:])
+            self.graph_aa = graphique_aa(self.fiche_pdb, self.repertoire, REPERTOIRE)
             if type(self.graph_aa) == str:
                 self.affichageFichier.changeTexte(self.graph_aa)
                 
             else:
-                self.texte = str(tableau_bilan_AA(self.fiche_pdb, chemin[:a:], self.repertoire))
+                self.texte = str(tableau_bilan_AA(self.fiche_pdb, REPERTOIRE, self.repertoire))
                 self.affichageFichier.changeTexte(self.texte)
 
                 self.Titre_fenêtre = "Analyse composition en acide aminé"
@@ -808,7 +800,7 @@ class Application:
             # Nom du futur fichier
             self.nom_fichier = self.entreeTexte.text + self.modif
             # Enregistrement du fichier
-            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier, self.repertoire, chemin[:a:])
+            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier, self.repertoire, REPERTOIRE)
             self.texte = "Le nouveau fichier pdb a bien été créé"
             self.affichageFichier.changeTexte(self.texte)
 
@@ -817,7 +809,7 @@ class Application:
             self.page = 3
             self.modif = "poids"
             self.nom_fichier = self.entreeTexte.text + self.modif
-            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier, self.repertoire, chemin[:a:])
+            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier, self.repertoire, REPERTOIRE)
             self.texte = "Le nouveau fichier pdb a bien été créé."
             self.affichageFichier.changeTexte(self.texte)
         
@@ -826,7 +818,7 @@ class Application:
             self.page = 3
             self.modif = "frequence"
             self.nom_fichier = self.entreeTexte.text + self.modif
-            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier, self.repertoire, chemin[:a:])
+            fichier_pdb(self.fiche_pdb, self.modif, self.nom_fichier, self.repertoire, REPERTOIRE)
             self.texte = "Le nouveau fichier pdb a bien été créé"
             self.affichageFichier.changeTexte(self.texte)
 
