@@ -12,5 +12,4 @@ pip install openpyxl
 pip install PyQt5
 
 
-
 echo "L'installation des modules a bien été effectuée."

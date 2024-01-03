@@ -11,6 +11,5 @@ pip install pyreadr
 pip install openpyxl 
 pip install PyQt5
 
-
 echo Installation terminee.
 pause
