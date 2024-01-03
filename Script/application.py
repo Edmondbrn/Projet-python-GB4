@@ -12,7 +12,7 @@ os.chdir(REPERTOIRE)
 try:
     from globale import *   
     from BoiteTexte.boiteTexteRapide  import boiteTexteRapide
-    import pygame as pg
+    import pygazme as pg
     import pygame_gui as pgg
     import txt
     import pandas as pd
@@ -25,7 +25,8 @@ try:
     from Matrice_contact import graph_matrice, fichier_matrice, matrice_contact
     from Creation_fichiers import fichier_pdb, fichier_bilan
 
-except:
+except Exception as erreur:
+    print("Erreur :", erreur)
     input("Un problème a eu lieu lors du chargement des modules. Utilisez le fichier .bat ou .sh pour les installer. Entrer pour fermer et réessayer")
     quit()
 

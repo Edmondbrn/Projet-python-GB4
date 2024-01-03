@@ -10,6 +10,7 @@ pip install pandas
 pip install pyreadr
 pip install openpyxl
 pip install PyQt5
+pip install scipy
 
 
 echo "L'installation des modules a bien été effectuée."
