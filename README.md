@@ -22,9 +22,13 @@
    bash module.sh
    <!-- Pour Linux -->
    ```   
-    ``` bash
+   ``` bash
    sh module.sh
-   <!-- Pour MacOS -->
+   <!-- Pour MacOS utilisant Bash -->
+   ```   
+   ``` zsh
+   zsh module.sh
+   <!-- Pour MacOS utilisant Zsh -->
    ```
 
 4. Double cliquez sur le fichier "Application.py". Si tout se passe bien, une fenêtre devrait s'ouvrir.
