@@ -13,6 +13,7 @@ def header(PDB):
         if "DBREF" in ligne :
             ligne = ligne.split()
             seq += ligne[6] +  "|" +ligne[7] + "\n"
+            break
     return seq
 
 def FASTA(PDB):
@@ -43,7 +44,10 @@ def FASTA(PDB):
         # Création de la liste pour accueillir la séquence à une lettre
         liste_AA_1_Lettre = []
         for AA in liste_AA:
-            liste_AA_1_Lettre.append(code_acide_amine[AA])
+            try:
+                liste_AA_1_Lettre.append(code_acide_amine[AA])
+            except:
+                continue
 
         #Code pour insérer un retour à la ligne tous les 80 AA
         if len(liste_AA_1_Lettre) > 80:
