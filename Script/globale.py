@@ -2,7 +2,6 @@
 #                   Importation des librairies                #
 ###############################################################
 import pygame as pg
-import os
 
 ###############################################################
 #               Définitions des variables globales            #
@@ -10,7 +9,7 @@ import os
 NOM_FENETRE = "Projet"
 
 # Taille de la fenêtre (largeur, hauteur)
-TAILLE_FENETRE = (1800, 1010)
+TAILLE_FENETRE = (1800, 900)
 
 COULEUR_FOND = pg.Color('#000000')
 

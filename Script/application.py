@@ -168,7 +168,7 @@ class Application:
         self.page3.blit(IMAGE_FOND, (0,0))
 
         # taille de la boite de texte principale
-        tailleAffichageFichier = (1300, 850)
+        tailleAffichageFichier = (1300, 800)
 
         # GUI manager permet de créer des boutons directement
         self.managerPage3 = pgg.UIManager(TAILLE_FENETRE, 'theme.json')
