@@ -36,7 +36,7 @@ Pour bien visualiser le readme, veuillez le consulter sur: https://github.com/Ed
    ```
 
 4. Double cliquez sur le fichier "Application.py" présent dans le dossier "Script". Si tout se passe bien, une fenêtre devrait s'ouvrir.     
-   Pour Linux, vous pouvez utiliser la commande:   
+   Pour Linux ou MacOS, vous pouvez utiliser la commande:   
    ``` bash
    python3 application.py
    <!-- Pour Linux, vérifier que vous êtes au bon endroit Projet_python_GB4/Script -->
