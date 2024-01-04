@@ -36,10 +36,10 @@ Pour bien visualiser le README, veuillez le consulter sur: https://github.com/Ed
    ```
 
 4. Double cliquez sur le fichier "Application.py" présent dans le dossier "Script". Si tout se passe bien, une fenêtre devrait s'ouvrir.     
-   Pour Linux ou MacOS, vous pouvez utiliser la commande:   
+   Pour Linux ou MacOS, vous pouvez utiliser la commande (en ouvrant un terminal dans le dossier script comme dans l'étape 3.):   
    ``` bash
    python3 application.py
-   <!-- Pour Linux, vérifier que vous êtes au bon endroit Projet_python_GB4/Script -->
+   <!-- Pour Linux et MacOS, vérifiez que vous êtes au bon endroit Projet_python_GB4/Script -->
    ```
 
 #
@@ -47,11 +47,11 @@ Pour bien visualiser le README, veuillez le consulter sur: https://github.com/Ed
 
  1. Le logiciel permet de charger en ligne ou en local une fiche PDB (exemple: 1CRN.pdb, fourni) 
 
- 2. Le logiciel a besoin d'une connexion internet pour fonctionner au mieux
+ 2. Le logiciel a besoin d'une connexion internet pour fonctionner au mieux.
 
- 3. Si vous voulez ouvrir une fiche en local, veuillez respecter la nomenclature de l'exemple 1CRN (Données-->1CRN)
+ 3. Si vous voulez ouvrir une fiche en local, veuillez respecter la nomenclature de l'exemple 1CRN (Données-->1CRN).
 
- 4. Tous les documents téléchargées seront présents dans un dossier portant le nom de la fiche PDB dans le dossier "Données"
+ 4. Tous les documents téléchargées seront présents dans un dossier portant le nom de la fiche PDB dans le dossier "Données".
 
 
 ## Mise à jour
@@ -62,7 +62,7 @@ https://github.com/Edmondbrn/Projet-python-GB4
 
 ## Note
 
-Il se peut que la fonctionnalité de la matrice de contact mette du temps à répondre si la séquence protéique est importante
+Il se peut que la fonctionnalité de la matrice de contact mette du temps à répondre si la séquence protéique est importante.
 Cela vaut aussi pour la fiche pymol en fonction des fréquences d'apparition des acides aminés.
 
 ## Auteurs
