@@ -33,7 +33,7 @@ def classification(AA, Classification, PDB, chemin_py, repertoire):
          # Si le critère de classification est "polarite", on vérifie à quel groupe appartient l'acide aminé spécifié et renvoie la valeur associée à ce groupe dans le dictionnaire dico_polarité
         for element in dico_polarité.keys():
             if AA in element:
-                return dico_polarité[element]
+                return round(dico_polarité[element], 2)
     
     elif Classification == "poids":
         # On crée un dictionnaire associant chaque acide aminé à son poids moléculaire
@@ -42,7 +42,7 @@ def classification(AA, Classification, PDB, chemin_py, repertoire):
                                  'LEU': 131.18, 'LYS': 146.19, 'MET': 149.21, 'PHE': 165.19, 'PRO': 115.13, 
                                  'SER': 105.09,'THR': 119.12, 'TRP': 204.23, 'TYR': 181.19, 'VAL': 117.15}
         #Si le critère de classification est "poids", la fonction renvoie le poids moléculaire de l'acide aminé spécifié multiplié par 4
-        return poids_moleculaires_aa[AA]*4
+        return round(poids_moleculaires_aa[AA]*4, 2)
 
     elif Classification == "frequence":
          # On appelle une fonction externe "tableau_bilan_AA" avec le paramètre PDB
@@ -53,7 +53,7 @@ def classification(AA, Classification, PDB, chemin_py, repertoire):
         # Sélectionne la ligne pour l'acide aminé dans la colonne fréquence
         donnee = df.loc[df["AA"]== acide_amine_1_lettre]["Freq"]
         # Renvoie uniquement la valeur arrondie de la fréquence
-        return round(donnee.iloc[0])
+        return round(donnee.iloc[0]*10, 2)
     
 
 
@@ -67,7 +67,13 @@ def fichier_pdb(PDB, Classification, code_pdb, repertoire, chemin_py):
         if line[0:4] == "ATOM":
             AA = line[17:20]
             nv_B_Factor = classification(AA, Classification, PDB, chemin_py, repertoire)
-            nvline = line[:61] + str(nv_B_Factor) + line[-12:-1]
+            if len(str(round(nv_B_Factor))) >= 3:
+                espace = ""
+            elif len(str(round(nv_B_Factor))) >=2 and len(str(round(nv_B_Factor))) < 3 :
+                espace = " "
+            else:
+                espace = "  "
+            nvline = line[:60] + espace + "{:.2f}".format(nv_B_Factor) + line[-12:-1] + line[-1]
             fh.write(nvline + "\n")
         else:
             fh.write(line + "\n")
