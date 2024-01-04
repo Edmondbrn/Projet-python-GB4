@@ -1,6 +1,7 @@
 
 # Projet GB4: Analyse d'une fiche PDB
 
+Pour bien visualiser le readme, veuillez le consulter sur: https://github.com/Edmondbrn/Projet-python-GB4
 
 
 ## Etapes d'installation
@@ -18,7 +19,7 @@
    Pour le fichier .sh il faut l'éxécuter depuis le terminal du système d'exploitation    
    Pour ce faire, aller dans le dossier général (contenant module.sh), faites clique droit --> ouvrir un terminal    
 
-   ![Logo](tuto_macOS.png)
+   ![Logo](macOS.png)
 
    Entrer:
    ``` bash
@@ -35,7 +36,7 @@
    ```
 
 4. Double cliquez sur le fichier "Application.py" présent dans le dossier "Script". Si tout se passe bien, une fenêtre devrait s'ouvrir.     
-   Pour Linux, vous pouvez utiliser la commande:   
+   Pour Linux ou MacOS, vous pouvez utiliser la commande:   
    ``` bash
    python3 application.py
    <!-- Pour Linux, vérifier que vous êtes au bon endroit Projet_python_GB4/Script -->
