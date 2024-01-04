@@ -19,7 +19,7 @@ Pour bien visualiser le readme, veuillez le consulter sur: https://github.com/Ed
    Pour le fichier .sh il faut l'éxécuter depuis le terminal du système d'exploitation    
    Pour ce faire, aller dans le dossier général (contenant module.sh), faites clique droit --> ouvrir un terminal    
 
-   ![Logo](tuto_macOS.png)
+   ![Logo](macOS.png)
 
    Entrer:
    ``` bash
