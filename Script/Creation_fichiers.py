@@ -19,8 +19,13 @@ import pandas as pd
 #====================================================================================================================
 def classification(AA, Classification, PDB, chemin_py, repertoire): 
     #on définit une fonction classification prenant en compt 3 arguments : un AA spécifique, un critère de classification, et le paramètre PDB 
-    '''Classification des acides aminés en fonction de leur polarité, acidité, basicité, poids, fréquence d'apparition.
-    Définition dictionnaire code des acides aminés : 3L to 1L'''
+    """
+    Classification des acides aminés en fonction de leur polarité, acidité, basicité, poids, fréquence d'apparition.
+    Définition dictionnaire code des acides aminés : 3L to 1L
+    Input: Acide aminé en str, la classification choisie en str (voir dans application.py), la fiche pdb en str, le repertoire de travail générral et le repertoire du lieu d'enregistrement des résultats en str
+    Output: Nouvelle valeur du b factor  (float)
+
+    """
     if Classification == "polarite":  
         # Définition de groupes d'acides aminés en fonction de leur polarité
         polaires_non_charges = ('SER', 'THR', 'ASN', 'GLN', 'CYS')
@@ -59,22 +64,33 @@ def classification(AA, Classification, PDB, chemin_py, repertoire):
 
 
 def fichier_pdb(PDB, Classification, code_pdb, repertoire, chemin_py):
-    '''Création d'un nouveau fichier qui contiendra notre classification des acides aminés par ligne et leur B-factor correspondant.'''
+    """
+    Création d'un nouveau fichier qui contiendra notre classification des acides aminés par ligne et leur B-factor correspondant.
+    Input: fiche pdb, classification choisie, code pdb de la fiche, repertoire de travail général et celui du dossier de la fiche en question, tous en str
+    Output: nouveau fichier pdb (str) pour la coloration selon les b factor sur pymol
+    
+    """
+    # Fixe repertoire dans le dossier de la fiche
     os.chdir(repertoire)
     fh = open("nouveau_fichier{}.pdb".format(code_pdb),'w')
     PDB2 = PDB.split("\n")
     for line in PDB2:
+        # lignes avec un b factor
         if line[0:4] == "ATOM":
+            # on récupère l'acide aminé (coupe la première lettre si plusieurs formes, ex: ALEU, BLEU pour une leucine)
             AA = line[17:20]
             nv_B_Factor = classification(AA, Classification, PDB, chemin_py, repertoire)
+            # Mise en place des espaces selon la taille du b factor
             if len(str(round(nv_B_Factor))) >= 3:
                 espace = ""
             elif len(str(round(nv_B_Factor))) >=2 and len(str(round(nv_B_Factor))) < 3 :
                 espace = " "
             else:
                 espace = "  "
+            # création de la ligne avec le nouveau b factor et en gardant la même mise en page que la ligne d'origine
             nvline = line[:60] + espace + "{:.2f}".format(nv_B_Factor) + line[-12:-1] + line[-1]
             fh.write(nvline + "\n")
+        # On reprend toutes les lignes n'entrant pas en compte dans les coordonnées/b factor des atomes
         else:
             fh.write(line + "\n")
     fh.close()
@@ -82,13 +98,21 @@ def fichier_pdb(PDB, Classification, code_pdb, repertoire, chemin_py):
 
 
 def mise_en_page(titre):
-    '''Création d'une nouvelle mise en page de notre nouveau fichier PDB comprenant les B-factor des atomes.'''
+    """
+    Création d'une nouvelle mise en page de notre nouveau fichier bilan.
+    Input: Titre de l'en-tête au format str
+    Output: En tête en str
+    """
     texte_separation = "="*200 +"\n" + " "*90 + titre + "\n" + "="*200 + "\n"*2
     return texte_separation
 
 def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
-    ''' Création d'un fichier bilan sur notre séquence d'interet comprenant toutes les informations importantes sur la séquence.
-    fiche bilan : Info importantes, seq FASTA, proportions aa, hydrophobicité protéine, présence de ponts disulfures.'''
+    """ 
+    Création d'un fichier bilan sur notre séquence d'interet comprenant toutes les informations importantes sur la séquence.
+    fiche bilan : Info importantes, seq FASTA, proportions aa, hydrophobicité protéine, présence de ponts disulfures.
+    Input: fiche pdb, code pdb de la fiche, repertoire générale et chemin du dossier des analyses de la fiche au format str
+    Output: Création du fichier .txt bilan
+    """
     tableau = tableau_bilan_AA(PDB, chemin, repertoire)
     # Indique d'enregistrer le fichier dans le dossier propre à la fiche
     os.chdir(repertoire)
@@ -126,9 +150,9 @@ def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
     else:
         _, dico_ptdi, dico_non_ptdi = dico_Distance
         for element in dico_ptdi.keys():
-            fh.write("Le cystéines suivantes sont liées: " + element + " à une distance de: " + str(round(dico_ptdi[element], 2)) + "A\n")
+            fh.write("Les cystéines suivantes sont liées: " + element + " à une distance de: " + str(round(dico_ptdi[element], 2)) + "A\n")
         for element in dico_non_ptdi.keys():
-            fh.write("Le cystéines suivantes ne sont pas liées: " + element + "à une distance de: " + str(round(dico_non_ptdi[element], 2)) + "A\n")
+            fh.write("Les cystéines suivantes ne sont pas liées: " + element + "à une distance de: " + str(round(dico_non_ptdi[element], 2)) + "A\n")
 
 
     return fh.close()

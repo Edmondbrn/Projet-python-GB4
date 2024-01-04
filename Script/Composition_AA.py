@@ -11,7 +11,6 @@ import seaborn as sb
 import pandas as pd
 import scipy.stats as st
 import os
-import PyQt5
 
 from Info_imp import FASTA
 
@@ -22,7 +21,12 @@ from Info_imp import FASTA
 #====================================================================================================================
 
 def composition_AA(PDB):
-    '''Fonction qui extrait la séquences en acides aminés de la fiche PDB et met les données dans un dictionnaire'''
+    """
+    Fonction qui extrait la séquences en acides aminés de la fiche PDB et met les données dans un dictionnaire
+    Input: fiche pdb en str
+    Output: dictionnaire au format compris par pandas/matplotlib (clé: nom colonne, valeur: liste des fréquences et liste des AA associées)
+            Ou Booléen en cas d'échec de la récupération de la séquence FASTA
+    """
     # Recuperation de la séquence FASTA
     seq,_ = FASTA(PDB)
     if seq:
@@ -51,7 +55,12 @@ def composition_AA(PDB):
         return False
 
 def tableau_bilan_AA(PDB, chemin, repertoire):
-    '''Fonction qui va créer le tableau regroupant les fréquences en aa de notre séquence et les fréquences de références'''
+    """
+    Fonction qui va créer le tableau regroupant les fréquences en aa de notre séquence et les fréquences de références
+    Input: fiche pdb,  chemin vers le repertoire de travail général, repertoire du dossier d'enregistrement des données en str
+    Ouput: tableau pandas contenant les fréquences et les fréquences de références (array_like)
+           Ou booléen si problème de chargement de la séquence FASTA
+    """
     # Importation du tableaur contenant les valeurs de références d'Uniprot
     os.chdir(chemin)
     dF = pd.read_excel("valeurs_freqAA.xlsx")
@@ -73,7 +82,11 @@ def tableau_bilan_AA(PDB, chemin, repertoire):
 
 
 def test_proportion(dataframe):
-    ''' Tests statistiques et test des proportions en acides aminés.'''
+    """
+    Tests statistiques et test des proportions en acides aminés.
+    Input: tableau pandas créé précédemment
+    ouput: liste de valeur p pour les comparaisons
+    """
 
     liste_mat = []
     # Création des matrices pour comparer les fréquences
@@ -95,9 +108,14 @@ def test_proportion(dataframe):
 
 
 def graphique_aa(PDB, repertoire, chemin):
-    '''Création du graphique comprenant les valeurs du tableau de fréquences précédant.'''
+    """
+    Création du graphique comprenant les valeurs du tableau de fréquences précédant.
+    Input: fiche pdb en str, repertoire où le dossier d'enregistrement des données est stocké, chemin du repertoire de travail général
+    Ouput: graphique pyplot (matplotlib)
+    """
     #Récupération du tableau
     df = tableau_bilan_AA(PDB, chemin, repertoire)
+    # test si ce que renvoie la fonction est un dataframe pandas
     if not isinstance(df, pd.DataFrame):
         return "Problème lors de la résolution de la séquence d'acide aminé.\nVeuillez vérifier votre fichier pdb."
     

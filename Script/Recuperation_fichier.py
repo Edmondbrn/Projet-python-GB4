@@ -18,7 +18,11 @@ import os
 #====================================================================================================================
 
 def importation_online(code):
-    """Fonction pour récupérer la fiche PDB en ligne"""
+    """
+    Fonction pour récupérer la fiche PDB en ligne
+    input: code pdb entré par l'utilisateur en str
+    output: fiche pdb correspodante en str ou message d'erreur en str
+    """
      # Initialisation d'une liste pour stocker les lignes du fichier PDB
     liste_fich = []
     try:
@@ -43,7 +47,11 @@ def importation_online(code):
 
 
 def importation_locale(code):
-    """Fonction pour récupérer la fiche PDB en local"""
+    """
+    Fonction pour récupérer la fiche PDB en local
+    Input: code pdb en str
+    Output: fiche pdb en str ou message d'erreur en str
+    """
      # Initialisation d'une liste pour stocker les lignes du fichier PDB
     liste_fich = []
     try:
@@ -66,7 +74,7 @@ def importation_locale(code):
 def enregistrement_pdb(chemin, code, PDB, enregistrement):
     """
     Fonction pour enregistrer la fiche PDB dans le dossier contenant les données
-    input: chemin du fichier py, le code pdb et la fiche PDB tous au format str
+    input: chemin du fichier py, le code pdb et la fiche PDB tous au format str et booléen pour savoir si on doit l'enregistrer ou seulement créer le dossier
     output: Crée le fichier et retourne le chemin d'accès
     """
 
