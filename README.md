@@ -1,6 +1,7 @@
 
 # Projet GB4: Analyse d'une fiche PDB
 
+Pour bien visualiser le readme, veuillez le consulter sur: https://github.com/Edmondbrn/Projet-python-GB4
 
 
 ## Etapes d'installation
