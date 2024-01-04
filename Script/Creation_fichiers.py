@@ -7,7 +7,7 @@
 
 from Composition_AA import tableau_bilan_AA
 from Info_imp import fusion, info_imp
-from coordonnees_atome import pontdisulfure
+from coordonnees_atome import pontdisulfure, secreted
 from Profil_hydrophobicite import hydrophobicite
 import os
 import pandas as pd
@@ -148,6 +148,10 @@ def fichier_bilan(PDB, nom_fiche, repertoire, chemin):
         fh.write("Aucun cystéine n'est présente dans votre séquence.\nVérifier l'intégrité de votre fichier pdb au cas où.")
     # Récupération des dictionnaires
     else:
+        if secreted(PDB):
+            fh.write("La protéine est sécrétée, donc les résultats ci-dessous sont assez fiables.\n\n")
+        else:
+            fh.write("Nous ne savons pas si la protéine est sécrétée, donc les résultats ci-dessous sont à prendre avec prudence.\n\n")
         _, dico_ptdi, dico_non_ptdi = dico_Distance
         for element in dico_ptdi.keys():
             fh.write("Les cystéines suivantes sont liées: " + element + " à une distance de: " + str(round(dico_ptdi[element], 2)) + "A\n")

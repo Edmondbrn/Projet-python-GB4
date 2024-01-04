@@ -183,9 +183,9 @@ def pontdisulfure(PDB, atom):
     
     # Test si la protéine est sécrétée ou non 
     if secreted(PDB):
-        Annonce = "La protéine est sécrétée selon sa fiche Uniprot.\nLes pontdisulfures prédis existent donc bel et bien."
+        Annonce = "La protéine est sécrétée selon sa fiche Uniprot.\nLes pontdisulfures prédits existent donc bel et bien."
     else:
-        Annonce = "La vérification de la sécrétion de la protéine a échoué. \nLes pontdisulfures prédis sont donc hypothétiques."
+        Annonce = "La vérification de la sécrétion de la protéine a échoué. \nLes pontdisulfures prédits sont donc hypothétiques."
         # Récupération des données de distance
     dico_distance = calcul_distance(PDB, atom)
     # Si on n'a pas de cystéine dans la séquence
