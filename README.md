@@ -20,26 +20,16 @@
    Entrer:
    ``` bash
    bash module.sh
+   <!-- Pour Linux -->
+   ```   
+    ``` bash
+   sh module.sh
+   <!-- Pour MacOS -->
    ```
 
 4. Double cliquez sur le fichier "Application.py". Si tout se passe bien, une fenêtre devrait s'ouvrir.
 
-## Etapes d'installation pour les utilisateurs MacOS 
-1. Instaler la version Python 3 (3.11 idéalement ou au-delà) en cliquant sur ce lien:
-   https://www.python.org/downloads/release/python-3115/
-   /!\ Lors de l'installation cochez la case "Ajouter Python aux variable de chemin" (PATH) pour le bon fonctionnement du programme
-  
-2. Installer les modules complémentaires nécessaires en utilisant le fichier 
-   module.bat (windows) ou module.sh (Linux et MacOS).
-   Attention, ces fichiers nécessitent d'avoir pip installé sur le système  d'exploitation
-   Pour les utilisateurs de MacOS, afin d'installer les modules (document module.sh), il suffit d'ouvrir le terminal de votre ordinateur.
-   Il faut ensuite écrire : sh emplacementdemodule.sh 
-   Il va donc ensuite éxécuter le document et installer tous les modules nécessaire à l'éxécution de notre programme sur votre ordinateur. 
-   Normalement, pip devrait être installé si l'étape 1 est respectée (variable PATH).
-   
-3. Double cliquer sur le fichier "Application.py". Si tout se passe bien, une fenêtre devrait s'ouvrir.
-
-
+#
 ## Utilisation
 
  1. Le logiciel permet de charger en ligne ou en local une fiche PDB (exemple: 1CRN.pdb, fourni) 
