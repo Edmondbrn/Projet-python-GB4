@@ -5,16 +5,24 @@
 
 ## Etapes d'installation
 
-1. Instaler la version Python 3 (3.11 idéalement ou au-delà) en cliquant sur ce lien:
+1. Instaler la version Python 3 (3.10/3.11 idéalement ou au-delà) en cliquant sur ce lien:
    https://www.python.org/downloads/release/python-3115/
    /!\ Lors de l'installation cochez la case "Ajouter Python aux variable de chemin" (PATH) pour le bon fonctionnement du programme
 
 2. Installer les modules complémentaires nécessaires en utilisant le fichier 
    module.bat (windows) ou module.sh (Linux et MacOS).
-   Attention, ces fichiers nécessitent d'avoir pip installé sur le système  d'exploitation
+   Attention, ces fichiers nécessitent d'avoir pip installé sur le système  d'exploitation. Si vous avez conda par défaut veuillez le modifier (ou alors remplacez pip install par conda install en ouvrant les fichiers dans une éditeur de texte).
    Normalement, pip devrait être installé si l'étape 1 est respectée (variable PATH).
 
-3. Double cliquer sur le fichier "Application.py". Si tout se passe bien, une fenêtre devrait s'ouvrir.
+3. Pour exécuter le fichier .bat il suffit de double cliquer dessus.    
+   Pour le fichier .sh il faut l'éxécuter depuis le terminal du système d'exploitation    
+   Pour ce faire, aller dans le dossier général (contenant module.sh), faites clique droit --> ouvrir un terminal    
+   Entrer:
+   ``` bash
+   bash module.sh
+   ```
+
+4. Double cliquez sur le fichier "Application.py". Si tout se passe bien, une fenêtre devrait s'ouvrir.
 
 ## Etapes d'installation pour les utilisateurs MacOS 
 1. Instaler la version Python 3 (3.11 idéalement ou au-delà) en cliquant sur ce lien:
