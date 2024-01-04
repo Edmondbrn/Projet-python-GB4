@@ -22,7 +22,7 @@
    bash module.sh
    <!-- Pour Linux -->
    ```   
-   ``` bash
+   ``` sh
    sh module.sh
    <!-- Pour MacOS utilisant Bash -->
    ```   
@@ -31,7 +31,12 @@
    <!-- Pour MacOS utilisant Zsh -->
    ```
 
-4. Double cliquez sur le fichier "Application.py". Si tout se passe bien, une fenêtre devrait s'ouvrir.
+4. Double cliquez sur le fichier "Application.py" présent dans le dossier "Script". Si tout se passe bien, une fenêtre devrait s'ouvrir.     
+   Pour Linux, vous pouvez utiliser la commande:   
+   ``` bash
+   python3 application.py
+   <!-- Pour Linux, vérifier que vous êtes au bon endroit Projet_python_GB4/Script -->
+   ```
 
 #
 ## Utilisation
