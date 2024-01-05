@@ -22,22 +22,22 @@ Pour bien visualiser le README, veuillez le consulter sur: https://github.com/Ed
    ![Logo](macOS.png)
 
    Entrer:
-   ``` bash
+``` bash
    bash module.sh
    <!-- Pour Linux -->
    ```   
-   ``` sh
+``` sh
    sh module.sh
    <!-- Pour MacOS utilisant Bash -->
    ```   
-   ``` zsh
+``` zsh
    zsh module.sh
    <!-- Pour MacOS utilisant Zsh -->
    ```
 
 4. Double cliquez sur le fichier "Application.py" présent dans le dossier "Script". Si tout se passe bien, une fenêtre devrait s'ouvrir.     
    Pour Linux ou MacOS, vous pouvez utiliser la commande (en ouvrant un terminal dans le dossier script comme dans l'étape 3.):   
-   ``` bash
+``` bash
    python3 application.py
    <!-- Pour Linux et MacOS, vérifiez que vous êtes au bon endroit Projet_python_GB4/Script -->
    ```
@@ -51,7 +51,17 @@ Pour bien visualiser le README, veuillez le consulter sur: https://github.com/Ed
 
  3. Si vous voulez ouvrir une fiche en local, veuillez respecter la nomenclature de l'exemple 1CRN (Données-->1CRN).
 
- 4. Tous les documents téléchargées seront présents dans un dossier portant le nom de la fiche PDB dans le dossier "Données".
+ 4. Tous les documents téléchargées seront présents dans un dossier portant le nom de la fiche PDB dans le dossier "Données".    
+
+ 5. Pour les modifications de la fiche PDB, vous pouvez les visualiser avec le logiciel Pymol. Sur Windows et MacOS, l'installation est payante si vous n'avez pas  de license étdudiante. Sur Linux vous pouvez télécharger facilement la version complète en tapant dans un terminal:
+
+``` bash
+   sudo apt install pymol
+   <!-- Pour l'installation -->
+   pymol
+   <!-- Pour lancer pymol -->
+
+   ```
 
 
 ## Mise à jour

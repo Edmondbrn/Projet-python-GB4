@@ -579,7 +579,8 @@ class Application:
             
             # Test si le dossier existe déjà ou non
             try:
-                os.chdir(REPERTOIRE + "\\Données\\{}".format(self.entreeTexte.text.upper()))
+                self.repertoire = os.path.join(REPERTOIRE, "Données", self.entreeTexte.text.upper())
+                os.chdir(self.repertoire)
             # Message d'erreur si ce n'est pas le cas
             except:
                 self.page = "3_bis"
