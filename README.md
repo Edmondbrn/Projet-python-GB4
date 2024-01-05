@@ -57,7 +57,7 @@ Pour bien visualiser le README, veuillez le consulter sur: https://github.com/Ed
 
 ``` bash
    sudo apt install pymol
-   <!-- Pour MacOS utilisant Bash -->
+   <!-- Installation de pymol -->
    
    pymol
    <!-- Pour lancer pymol -->
